@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Congressional Districts</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="styles/bootstrap.min.css">
+    <link href="styles/bootstrap-slider.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="styles/styles.css" rel="stylesheet">
+
+    <!-- Leaflet Information -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+    integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+    crossorigin=""/>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+    integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+    crossorigin=""></script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.1/bootstrap-slider.js"> </script>
+  </head>
+
+  <body>
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+          <a class="navbar-brand abs" href="#">Congressional Redistricting App</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsingNavbar">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="navbar-collapse collapse" id="collapsingNavbar">
+              <ul class="navbar-nav ml-auto">
+                  <li class="nav-item">
+                      <a id="userDisplay" class="nav-link" href="" data-target="#myModal" data-toggle="modal">Guest User</a>
+                  </li>
+              </ul>
+          </div>
+      </nav>
+    <div id="map"></div>
+    <div id="menu">
+      <div id="registerLabel">
+          <a class="btn btn-secondary" data-toggle="collapse" href="#register" role="button" aria-expanded="false" aria-controls="collapseExample">Register</a>
+        </div>
+        <div class="collapse" id="register">
+            <div class="card card-body">
+              <form>
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="email" class="form-control" id="emailRegister" aria-describedby="emailHelp" placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="username" class="form-control" id="usernameRegister" aria-describedby="usernameHelp" placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                  <label for="password">Password</label>
+                  <input type="password" class="form-control" id="passwordRegister" placeholder="Password">
+                </div>
+                <button type="submit" id="registerSubmit" class="btn btn-secondary">Submit</button>
+                <h6 id="registerSuccess">Success! Please Login</h6>
+                <h6 id="registerError">Error, Please try again</h6>
+              </form>
+            </div>
+        </div>
+
+        <div id="loginLabel">
+          <a class="btn btn-secondary" data-toggle="collapse" href="#login" role="button" aria-expanded="false" aria-controls="collapseExample">Login</a>
+        </div>
+        <div class="collapse" id="login">
+            <div class="card card-body">
+              <form>
+                  <div class="form-group">
+                    <label for="usernameLogin">Username</label>
+                    <input class="form-control" id="usernameLogin" placeholder="Enter Username">
+                  </div>
+                  <div class="form-group">
+                    <label for="passwordLogin">Password</label>
+                    <input type="password" class="form-control" id="passwordLogin" placeholder="Enter Password">
+                  </div>
+                  <button type="submit" id="loginSubmit" class="btn btn-secondary">Submit</button>
+                  <h6 id="loginError">Username not found, Please try again</h6>
+                </form>
+            </div>
+        </div>
+
+          <div>
+            <a class="btn btn-secondary" data-toggle="collapse" href="#selectState" role="button" aria-expanded="false" aria-controls="collapseExample">Select A State </a>
+          </div>
+          <div class="collapse" id="selectState">
+              <div class="card card-body">
+                <a class="nav-link" href="#" onclick="findMinnesota()">Minnesota</a>
+                <a class="nav-link" href="#" onclick="findMaryland()">Maryland</a>
+                <a class="nav-link" href="#" onclick="findFlorida()">Florida</a>
+              </div>
+          </div>
+          
+          <div class="loginvalid">
+          <div>
+            <a class="btn btn-secondary" data-toggle="collapse" href="#config" role="button" aria-expanded="false" aria-controls="collapseExample">Set Configurations </a>
+          </div>
+          <div class="collapse" id="config">
+              <div class="card card-body">
+                  
+                      <div class="form-group">
+                        <label for="compactness">Goal Districts</label>
+                        <div>
+                            <input class="form-control" type="number" id="numDistricts" name="districts" min="1" max="100">
+                        </div>
+                        
+                        <label for="compactness">Majority-Minority <span id="majMinTicks">: </span> </label>
+                        <div>
+                            <b>50</b> <input id="majorityMinority" type="text" class="span2" value="" data-slider-min="50" data-slider-max="100" data-slider-step="1" data-slider-value="[50,98]"/> <b>100</b>
+                        </div>
+                        
+                        <label for="compactness">Target Demographic</label>
+                        <select class="form-control" id="targetDemo">
+                          <option>Caucasian</option>
+                          <option>African American</option>
+                          <option>Hispanic</option>
+                        </select>
+                        
+                        <label for="compactness">Goal Majority-Minority Districts</label>
+                        <div>
+                            <input class="form-control" type="number" id="numGoalDistricts" name="districts" min="1" max="100">
+                        </div>
+                        
+                        <label for="compactness">Compactness Measure</label>
+                        <br>
+                        <label for="polsbyPopper">Polsby Popper <span id="polsbyPopperTicks">: </span> </label>
+                        <div>
+                            <b>0</b> <input id="polsbyPopper" type="text" class="span2" value="" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="0"/> <b>100</b>
+                        </div>
+                        <label for="compactness">Edge Cut <span id="edgeCutTicks">: </span> </label>
+                        <div>
+                            <b>0</b> <input id="edgeCut" type="text" class="span2" value="" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="0"/> <b>100</b>
+                        </div>
+
+                        <label for="politicalFairness">Political Fairness Measure</label>
+                        <br>
+                        <label for="efficencyGap">Efficency Gap <span id="effGapTicks">: </span> </label>
+                        <div>
+                            <b>0</b> <input id="efficencyGap" type="text" class="span2" value="" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="0"/> <b>100</b>
+                        </div>
+                        <label for="compactness">Mean Median <span id="meanMedianTicks">: </span> </label>
+                        <div>
+                            <b>0</b> <input id="meanMedian" type="text" class="span2" value="" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="0"/> <b>100</b>
+                        </div>
+                        
+                        <label for="racialCompactness">Population Deviation <span id="popDevTicks">: </span> </label>
+                        <div>
+                            <b>0</b> <input id="populationDeviation" type="text" class="span2" value="" data-slider-min="0" data-slider-max="5" data-slider-step=".1" data-slider-value="0"/> <b>5</b>
+                        </div>
+
+                        <button id="configSubmit" class="btn btn-secondary">Submit</button>
+                      </div>
+                   
+              </div>
+          </div>
+        </div>
+        <div id="logoutLabel">
+            <a class="btn btn-secondary" data-toggle="collapse" href="#login" role="button" aria-expanded="false" aria-controls="collapseExample">Logout</a>
+        </div>
+    </div>
+
+    <!-- State geojson files -->
+    <script src="data/md_state.js"></script>
+    <script src= "data/fl_state.js"></script>
+    <script src="data/mn_state.js"></script>
+    
+    <!-- District geojson files -->
+    <script src="data/mn_districts.js"></script>
+    <script src="data/md_districts.js"></script>
+    <script src="data/fl_districts.js"></script>
+
+    <!-- Precinct geojson files -->
+    <script src="data/mn_precincts.js"></script>
+    <script src="data/md_precincts.js"></script>
+    <script src="data/fl_precincts.js"></script>
+
+    <script src="js/map.js"></script>
+    <script src="js/query-actions.js"></script>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  
+
+<div class="navmenu navmenu-default navmenu-fixed-left offcanvas-clone"></div></body></html>

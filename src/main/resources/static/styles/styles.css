@@ -1,0 +1,85 @@
+html,
+body {
+	height: 100%;
+	background: #D1D1D1;
+}
+
+.canvas {
+	position: relative;
+	left: 0;
+	z-index: 2;
+	min-height: 100%;
+	padding: 50px 0 0 0;
+	background: #fff;
+}
+
+#map {
+	/* padding-top: 170px;  */
+	float:right;
+	width: 75%;
+	height: 90%;
+}
+
+.input-group-prepend span {
+	width: 50px;
+	background-color: #900000;
+	color: white;
+	border: 0 !important;
+}
+
+input:focus {
+	outline: 0 0 0 0 !important;
+	box-shadow: 0 0 0 0 !important;
+}
+
+.login_btn {
+	color: white;
+	background-color: #900000;
+	width: 100px;
+}
+
+.login_btn:hover {
+	color: black;
+	background-color: white;
+}
+
+.btn {
+	margin-top:10px;
+	margin-left:10px;
+}
+
+#loginSubmit, #registerSubmit, #configSubmit {
+	margin: auto;
+}
+
+/* .loginvalid {
+	display:none;
+} */
+
+#logoutLabel {
+	display: none;
+}
+
+#loginError {
+	display: none;
+	color: red;
+	margin-top: 12px;
+}
+
+#registerSuccess {
+	display: none;
+	color: green;
+	margin-top: 12px;
+}
+
+#registerError {
+	display: none;
+	color: red;
+	margin-top: 12px;
+}
+
+b {
+	margin-right:10px;
+	margin-left:10px;
+}
+
