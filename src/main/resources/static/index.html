@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<!-- saved from url=(0056)https://www.jasny.net/bootstrap/examples/navmenu-reveal/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Congressional Districts</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="styles/bootstrap.min.css">
+    <link href="styles/jasny-bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="styles/navmenu-reveal.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen" href="styles/styles.css">
+
+    <!-- Leaflet Information -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+    integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+    crossorigin=""/>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+    integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+    crossorigin=""></script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+  </head>
+
+  <body>
+    <div id="map"></div>
+    <div id="menu">
+      <div>
+          <a class="btn btn-secondary" data-toggle="collapse" href="#register" role="button" aria-expanded="false" aria-controls="collapseExample">Register</a>
+        </div>
+        <div class="collapse" id="register">
+            <div class="card card-body">
+              <form>
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="email" class="form-control" id="emailRegister" aria-describedby="emailHelp" placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="username" class="form-control" id="usernameRegister" aria-describedby="usernameHelp" placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                  <label for="password">Password</label>
+                  <input type="password" class="form-control" id="passwordRegister" placeholder="Password">
+                </div>
+                <button type="submit" id="registerSubmit" class="btn btn-secondary">Submit</button>
+              </form>
+            </div>
+        </div>
+
+        <div>
+          <a class="btn btn-secondary" data-toggle="collapse" href="#login" role="button" aria-expanded="false" aria-controls="collapseExample">Login</a>
+        </div>
+        <div class="collapse" id="login">
+            <div class="card card-body">
+              <form action="/login" method="POST">
+                  <div class="form-group">
+                    <label for="usernameLogin">Username</label>
+                    <input class="form-control" id="usernameLogin" placeholder="Enter Username">
+                  </div>
+                  <div class="form-group">
+                    <label for="passwordLogin">Password</label>
+                    <input type="password" class="form-control" id="passwordLogin" placeholder="Enter Password">
+                  </div>
+                  <button type="submit" id="loginSubmit" class="btn btn-secondary">Submit</button>
+                </form>
+            </div>
+        </div>
+
+        <div>
+          <a class="btn btn-secondary" data-toggle="collapse" href="#selectState" role="button" aria-expanded="false" aria-controls="collapseExample">Select A State </a>
+        </div>
+        <div class="collapse" id="selectState">
+            <div class="card card-body">
+              <a class="nav-link" href="#" onclick="findMinnesota()">Minnesota</a>
+              <a class="nav-link" href="#" onclick="findMaryland()">Maryland</a>
+              <a class="nav-link" href="#" onclick="findFlorida()">Florida</a>
+            </div>
+        </div>
+
+        <div>
+          <a class="btn btn-secondary" data-toggle="collapse" href="#config" role="button" aria-expanded="false" aria-controls="collapseExample">Set Configurations </a>
+        </div>
+        <div class="collapse" id="config">
+            <div class="card card-body">
+                <form action="/startAlgorithm" method="POST">
+                    <div class="form-group">
+                      <label for="compactness">Compactness Measure</label>
+                      <select class="form-control" id="compactness">
+                        <option>Polsby Popper</option>
+                        <option>Edge Cut</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="politicalFairness">Political Fairness Measure</label>
+                        <select class="form-control" id="politicalFairness">
+                          <option>Efficency Gap</option>
+                          <option>Mean Median</option>
+                        </select>
+                    </div>
+                    <label for="racialCompactnessMin">Racial Compactness Min</label>
+                    <input type="range" class="custom-range" id="customRange1" min="0" max="1" step="0.01">
+                    <label for="racialCompactnessMax">Racial Compactness Max</label>
+                    <input type="range" class="custom-range" id="customRange1" min="0" max="1" step="0.01">
+                    <label for="racialCompactnessMax">Population</label>
+                    <input type="range" class="custom-range" id="customRange1" min="0" max="1" step="0.01">
+                    <button type="submit" id="configSubmit" class="btn btn-secondary">Submit</button>
+                 </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="data/md_simplify_data.js"></script>
+    <script src= "data/fl_simplify_data.js"></script>
+    <script src="data/mn_data.js"></script>
+
+    <script src="js/map.js"></script>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="js/jasny-bootstrap.min.js"></script>
+  
+
+<div class="navmenu navmenu-default navmenu-fixed-left offcanvas-clone"></div></body></html>
