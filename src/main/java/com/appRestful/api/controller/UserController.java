@@ -34,6 +34,7 @@ public class UserController {
 	@PostMapping("/adduser")
 	public ResponseEntity createUser(@RequestBody UserDetailsRequestModel userDetails) {
 		
+		System.out.println(userDetails.getPassWord());
 		UserDto foundUser = null;
 		try {
 			foundUser = userService.findByUsername(userDetails.getUsername());
@@ -47,9 +48,11 @@ public class UserController {
 			UserRest returnUser = new UserRest();
 			
 			System.out.println(userDetails.getUsername());
+			System.out.println(userDetails.getPassWord());
 			UserDto userDto = new UserDto();
-			BeanUtils.copyProperties(userDetails, userDto);
-		
+			userDto.setUsername(userDetails.getUsername());
+			userDto.setPassword(userDetails.getPassWord());
+			userDto.setEmail(userDetails.getEmail());
 			UserDto createdUser = userService.createUser(userDto);
 			returnUser.setUsername(createdUser.getUsername());
 			

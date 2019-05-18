@@ -13,7 +13,7 @@ $('#registerSubmit').click(function(event){
         data: JSON.stringify({
             email: email,
             username: uname,
-            password: pword
+            passWord: pword
         }),
         contentType: 'application/json',
         success: function (returnUser) {
@@ -69,16 +69,31 @@ $('#configSubmit').click(function(event) {
     var populationDeviation = $('#populationDeviation').val();
     var population = $('#population').val();
 
-    console.log(goalDistricts);
-    console.log(minorityMajority);
-    console.log(targetDemo);
-    console.log(numGoalDistricts); 
-    console.log(polsbyPopper);
-    console.log(edgeCut);
-    console.log(efficencyGap);
-    console.log(meanMedian);
-    console.log(populationDeviation);
-    console.log(population);
+    $.ajax({
+        type: 'POST',
+        url: '/map/runAlgorithm',
+        dataType: 'json',
+        data: JSON.stringify({
+            stateID: stateID,
+            goalDistricts: goalDistricts,
+            minorityMajority: minorityMajority,
+            majorityMinorityDemographic: targetDemo,
+            numGoalDistricts: numGoalDistricts,
+            polsbyPopper: polsbyPopper,
+            edgeCut: edgeCut,
+            efficencyGap: efficencyGap,
+            meanMedian: meanMedian,
+            populationDeviation: populationDeviation,
+            population: population
+        }),
+        contentType: 'application/json',
+        success: function (returnValue) {
+            console.log(returnValue);
+        },
+        error: function() {
+            console.log("Error");
+        }
+    });
 });
 
 $('#majorityMinority').change(function(event) {

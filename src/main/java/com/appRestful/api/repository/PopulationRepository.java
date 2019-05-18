@@ -7,7 +7,7 @@ import com.appRestful.api.entity.UserEntity;
 
 public interface PopulationRepository extends CrudRepository<PopulationEntity,Long> {
 	
-	PopulationEntity findByPrecinctid(Long precinctid);
+	PopulationEntity findByPrecinctid(Long i);
 	
 
 }

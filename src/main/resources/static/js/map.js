@@ -12,6 +12,7 @@ L.tileLayer(
 
 // control that shows state info on hover
 var info = L.control();
+var stateID;
 
 function getRandomColor() {
 	var letters = '0123456789ABCDEF';
@@ -22,33 +23,20 @@ function getRandomColor() {
 	return color;
 }
 
-var color1 = getRandomColor();
-var color2 = getRandomColor();
-var color3 = getRandomColor();
-var color4 = getRandomColor();
-var color5 = getRandomColor();
-var color6 = getRandomColor();
-var color7 = getRandomColor();
-var color8 = getRandomColor();
 // get color depending on population density value
-function getColor(district) {
-	return district > 7
-		? color1
-		: district > 6
-			? color2
-			: district > 5
-				? color3
-				: district > 4 ? color4 : district > 3 ? color5 : district > 2 ? color6 : district > 1 ? color7 : color8;
+function getColor() {
+	return getRandomColor();
 }
 
-function style(feature) {
+function style(features) {
 	return {
 		weight: 2,
 		opacity: 1,
 		color: 'white',
 		dashArray: '3',
 		fillOpacity: 0.7,
-		fillColor: getColor(feature.properties.CongDist)
+		fillColor: getColor()
+		// fillColor: getColor(features.properties.GEO_ID)
 	};
 }
 
@@ -152,12 +140,15 @@ var fl_districts_layer = new L.GeoJSON(fl_districts_geojson, {
 });
 
 var mn_precincts_layer = new L.GeoJSON(mn_precincts_geojson, {
+	style: style,
 	onEachFeature: showMNPrecinctInfo
 });
 var md_precincts_layer = new L.GeoJSON(md_precincts_geojson, {
+	style: style,
 	onEachFeature: showMDPrecinctInfo
 });
 var fl_precincts_layer = new L.GeoJSON(fl_precincts_geojson, {
+	style: style,
 	onEachFeature: showFLPrecinctInfo
 });
 
@@ -210,11 +201,16 @@ function showFLPrecincts(feature, layer) {
 function showMNPrecinctInfo(feature, layer) {
 	layer.on('mouseover', function(e) {
 		console.log(feature.properties);
-
+		var totalPopulation = parseInt(feature.properties.republican_vote) + parseInt(feature.properties.democratic_vote) + parseInt(feature.properties.other_vote);
+		var demographics = "Black: " + feature.properties.black_pop
+										 + "<br>Caucasian: " + feature.properties.white_pop
+										 + "<br>Asian: " + feature.properties.asian_pop
+										 + "<br>Other: " + feature.properties.other_race_pop
+										 + "<br>Total Population: " + totalPopulation;
 
 		var popup = L.popup()
    	.setLatLng(e.latlng) 
-   	.setContent(feature.properties.black_pop)
+   	.setContent(demographics)
   	.openOn(map);
 	});
 }
@@ -244,6 +240,7 @@ function showFLPrecinctInfo(feature, layer) {
 }
 
 function findMinnesota() {
+	stateID = 27;
 	map.setView([ 46.39241, -94.63623 ], 7);
 	// District boundries 
 	layerGroup.addLayer(mn_districts_layer);
@@ -257,14 +254,15 @@ function findMinnesota() {
 			layerGroup.addLayer(mn_districts_layer);
 		}
 		// L.geoJson(mn_precincts_geojson).addTo(map);
-					// geojson = L.geoJson(mn_precincts_geojson, {
-			// 	style: style,
-			// 	onEachFeature: onEachFeature
-			// }).addTo(map);
+		// 			geojson = L.geoJson(mn_precincts_geojson, {
+		// 		style: style,
+		// 		onEachFeature: onEachFeature
+		// 	}).addTo(map);
 	});
 }
 
 function findFlorida() {
+	stateID = 12;
 	map.setView([ 27.994402, -81.760254 ], 7);
 	// District boundries
 	layerGroup.addLayer(fl_districts_layer);
@@ -286,6 +284,7 @@ function findFlorida() {
 }
 
 function findMaryland() {
+	stateID = 24;
 	map.setView([ 39.045753, -76.641273 ], 7);
 	// District boundries
 	layerGroup.addLayer(md_districts_layer);

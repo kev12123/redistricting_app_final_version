@@ -19,12 +19,12 @@ public class UserServiceImpl implements UserService {
 	public UserDto createUser(UserDto user) {
 		
 		System.out.println(user.getUsername());
+		System.out.println(user.getPassword() + "seoncd passs");
 		UserEntity userEntity = new UserEntity();
 		BeanUtils.copyProperties(user, userEntity);
 		
 		//setting encrypted password
-		userEntity.setPassword("test");
-		userEntity.setUserId("testId");
+		userEntity.setPassword(user.getPassword());
 		UserEntity storedUserDetails = userRepo.save(userEntity);
 		
 		UserDto returnValue = new UserDto();
@@ -38,8 +38,8 @@ public class UserServiceImpl implements UserService {
 		// TODO Auto-generated method stub
 		
 		UserEntity user =  userRepo.findByUsername(username);
-		System.out.println(user.getUsername());
-		System.out.println(user.getPassword());
+		System.out.println("Found user" + user.getUsername());
+		System.out.println("Found password" + user.getPassword());
 		UserDto returnValue = new UserDto();
 		BeanUtils.copyProperties(user, returnValue);
 		
