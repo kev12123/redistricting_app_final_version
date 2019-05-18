@@ -12,6 +12,7 @@ L.tileLayer(
 
 // control that shows state info on hover
 var info = L.control();
+var stateID;
 
 function getColor(i) {
 	return new Color(getRGB(i));
@@ -273,6 +274,7 @@ function showFLPrecinctInfo(feature, layer) {
 }
 
 function findMinnesota() {
+	stateID = 27;
 	map.setView([ 46.39241, -94.63623 ], 7);
 	// District boundries 
 	layerGroup.addLayer(mn_districts_layer);
@@ -294,6 +296,7 @@ function findMinnesota() {
 }
 
 function findFlorida() {
+	stateID = 12;
 	map.setView([ 27.994402, -81.760254 ], 7);
 	// District boundries
 	layerGroup.addLayer(fl_districts_layer);
@@ -315,6 +318,7 @@ function findFlorida() {
 }
 
 function findMaryland() {
+	stateID = 24;
 	map.setView([ 39.045753, -76.641273 ], 7);
 	// District boundries
 	layerGroup.addLayer(md_districts_layer);

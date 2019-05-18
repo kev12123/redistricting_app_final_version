@@ -74,6 +74,7 @@ $('#configSubmit').click(function(event) {
         url: '/map/runAlgorithm',
         dataType: 'json',
         data: JSON.stringify({
+            stateID: stateID,
             goalDistricts: goalDistricts,
             minorityMajority: minorityMajority,
             targetDemo: targetDemo,
