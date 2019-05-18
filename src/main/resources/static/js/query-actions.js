@@ -69,16 +69,30 @@ $('#configSubmit').click(function(event) {
     var populationDeviation = $('#populationDeviation').val();
     var population = $('#population').val();
 
-    console.log(goalDistricts);
-    console.log(minorityMajority);
-    console.log(targetDemo);
-    console.log(numGoalDistricts); 
-    console.log(polsbyPopper);
-    console.log(edgeCut);
-    console.log(efficencyGap);
-    console.log(meanMedian);
-    console.log(populationDeviation);
-    console.log(population);
+    $.ajax({
+        type: 'POST',
+        url: '/users/login',
+        dataType: 'json',
+        data: JSON.stringify({
+            goalDistricts: goalDistricts,
+            minorityMajority: minorityMajority,
+            targetDemo: targetDemo,
+            numGoalDistricts: numGoalDistricts,
+            polsbyPopper: polsbyPopper,
+            edgeCut: edgeCut,
+            efficencyGap: efficencyGap,
+            meanMedian: meanMedian,
+            populationDeviation: populationDeviation,
+            population: population
+        }),
+        contentType: 'application/json',
+        success: function (returnValue) {
+            console.log(returnValue);
+        },
+        error: function() {
+            console.log("Error");
+        }
+    });
 });
 
 $('#majorityMinority').change(function(event) {
