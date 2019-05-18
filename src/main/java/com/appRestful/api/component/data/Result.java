@@ -1,7 +1,6 @@
 package com.appRestful.api.component.data;
 
 public class Result {
-	
     private int year;
     private long democraticVotes;
     private long republicanVotes;
@@ -37,3 +36,4 @@ public class Result {
                 '}';
     }
 }
+

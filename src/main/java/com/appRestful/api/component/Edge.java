@@ -21,13 +21,13 @@ public class Edge extends DefaultEdge {
         weights = new HashMap<>();
     }
 
-    public Edge(Cluster source, Cluster destination, AlgorithmRequestModel algorithmData) {
+    public Edge(Cluster source, Cluster destination, AlgorithmRequestModel algorithmRequestModel) {
         weights = new HashMap<>();
         for (WeightCategory weightCategory : WeightCategory.values())
-            calculateJoinability(source, destination, weightCategory, algorithmData);
+            calculateJoinability(source, destination, weightCategory, algorithmRequestModel);
     }
 
-    public void calculateJoinability(Cluster source, Cluster destination, WeightCategory weightCategory, AlgorithmRequestModel algorithmData) {
+    public void calculateJoinability(Cluster source, Cluster destination, WeightCategory weightCategory, AlgorithmRequestModel algorithmRequestModel) {
         switch (weightCategory) {
             case COUNTY:
                 weights.put(WeightCategory.COUNTY, calculateCountyJoinability(source, destination));
@@ -36,10 +36,10 @@ public class Edge extends DefaultEdge {
                 weights.put(WeightCategory.POLITICAL, calculatePoliticalJoinability(source, destination));
                 break;
             case POPULATION:
-                weights.put(WeightCategory.POPULATION, calculatePopulationJoinability(source, destination, algorithmData));
+                weights.put(WeightCategory.POPULATION, calculatePopulationJoinability(source, destination, algorithmRequestModel));
                 break;
             case RACE:
-                weights.put(WeightCategory.RACE, calculateRaceJoinability(source, destination, algorithmData));
+                weights.put(WeightCategory.RACE, calculateRaceJoinability(source, destination, algorithmRequestModel));
                 break;
         }
     }
@@ -48,9 +48,9 @@ public class Edge extends DefaultEdge {
         Geography sourceGeography = source.getClusterData().getGeographicData();
         Geography destinationGeography = destination.getClusterData().getGeographicData();
         if (sourceGeography.getCounty().equals(destinationGeography.getCounty()))
-            return Utility.FULL_WEIGHT;
+            return Utility.fullWeight;
         else
-            return Utility.NO_WEIGHT;
+            return Utility.noWeight;
     }
 
     private double calculatePoliticalJoinability(Cluster source, Cluster destination) {
@@ -69,30 +69,30 @@ public class Edge extends DefaultEdge {
         return Math.abs(destinationPartyPercentage - sourcePartyPercentage);
     }
 
-    private double calculatePopulationJoinability(Cluster source, Cluster destination, AlgorithmRequestModel algorithmData) {
+    private double calculatePopulationJoinability(Cluster source, Cluster destination, AlgorithmRequestModel algorithmRequestModel) {
         Demography sourceDemography = source.getClusterData().getDemographyData();
         Demography destinationDemography = destination.getClusterData().getDemographyData();
         long totalPopulation = sourceDemography.getTotalPopulation() + destinationDemography.getTotalPopulation();
-        return Utility.FULL_WEIGHT -  ((double) totalPopulation / algorithmData.getTargetPopulation());
+        return Utility.fullWeight -  ((double) totalPopulation / algorithmRequestModel.getTargetPopulation());
     }
 
-    private double calculateRaceJoinability(Cluster source, Cluster destination, AlgorithmRequestModel algorithmData) {
+    private double calculateRaceJoinability(Cluster source, Cluster destination, AlgorithmRequestModel algorithmRequestModel) {
         Demography sourceDemography = source.getClusterData().getDemographyData();
         Demography destinationDemography = destination.getClusterData().getDemographyData();
-        double mergedPercentage = calculateMergedPercentage(source, destination, algorithmData);
-        double lowerBound = algorithmData.getMajorityMinorityMinPercentage();
-        double upperBound = algorithmData.getMajorityMinorityMaxPercentage();
+        double mergedPercentage = calculateMergedPercentage(source, destination, algorithmRequestModel);
+        double lowerBound = algorithmRequestModel.getMajorityMinorityMinPercentage();
+        double upperBound = algorithmRequestModel.getMajorityMinorityMaxPercentage();
         boolean isNowMajorityMinority = lowerBound <= mergedPercentage && mergedPercentage <= upperBound;
         if (sourceDemography.isMajorityMinority() || destinationDemography.isMajorityMinority())
-            return (isNowMajorityMinority) ? Utility.FULL_WEIGHT : Utility.NO_WEIGHT;
+            return (isNowMajorityMinority) ? Utility.fullWeight : Utility.noWeight;
         else
-            return (isNowMajorityMinority) ? Utility.FULL_WEIGHT : Utility.HALF_WEIGHT;
+            return (isNowMajorityMinority) ? Utility.fullWeight : Utility.halfWeight;
     }
 
-    private double calculateMergedPercentage(Cluster source, Cluster destination, AlgorithmRequestModel algorithmData) {
+    private double calculateMergedPercentage(Cluster source, Cluster destination, AlgorithmRequestModel algorithmRequestModel) {
         Demography sourceDemography = source.getClusterData().getDemographyData();
         Demography destinationDemography = destination.getClusterData().getDemographyData();
-        Demographic majorityMinorityDemographic = algorithmData.getMajorityMinorityDemographic();
+        Demographic majorityMinorityDemographic = algorithmRequestModel.getMajorityMinorityDemographic();
         long sourceRacePopulation = sourceDemography.getDemographicPopulation(majorityMinorityDemographic);
         long destinationRacePopulation = destinationDemography.getDemographicPopulation(majorityMinorityDemographic);
         long mergedRacePopulations = sourceRacePopulation + destinationRacePopulation;

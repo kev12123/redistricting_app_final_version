@@ -9,21 +9,21 @@ import com.appRestful.api.enums.PoliticalParty;
 import com.appRestful.api.model.request.AlgorithmRequestModel;
 
 public class Demography {
-	
     private long totalPopulation;
     private Map<Demographic, Long> populationByDemographic;
     private Map<PoliticalParty, Long> populationByParty;
     private boolean hasMajorityMinorityPopulation;
+    private boolean wasMajorityMinority;
 
 
-    public Demography(long populationTotal, Map<Demographic, Long> populationByRace, Map<PoliticalParty, Long> populationByParty, AlgorithmRequestModel algorithmData) {
+    public Demography(long populationTotal, Map<Demographic, Long> populationByRace, Map<PoliticalParty, Long> populationByParty, AlgorithmRequestModel algorithmRequestModel) {
         this.totalPopulation = populationTotal;
         this.populationByDemographic = populationByRace;
         this.populationByParty = populationByParty;
-        setMajorityMinorityStatus(algorithmData);
+        setMajorityMinorityStatus(algorithmRequestModel);
     }
 
-    public Demography(Map<Demographic, Long> populationByRace, Map<PoliticalParty, Long> populationByParty, AlgorithmRequestModel algorithmData) {
+    public Demography(Map<Demographic, Long> populationByRace, Map<PoliticalParty, Long> populationByParty, AlgorithmRequestModel algorithmRequestModel) {
         this.totalPopulation = 0;
         this.populationByDemographic = populationByRace;
         this.populationByParty = populationByParty;
@@ -34,7 +34,7 @@ public class Demography {
         for(PoliticalParty politicalParty : populationByParty.keySet()){
             totalPopulation += populationByParty.get(politicalParty);
         }
-        setMajorityMinorityStatus(algorithmData);
+        setMajorityMinorityStatus(algorithmRequestModel);
     }
 
     public Demography(){
@@ -44,11 +44,12 @@ public class Demography {
     }
 
     private Demography(long populationTotal,Map<Demographic, Long> populationByRace, Map<PoliticalParty, Long> populationByParty,
-                       boolean hasMajorityMinorityPopulation){
+                       boolean hasMajorityMinorityPopulation, boolean wasMajorityMinority){
         this.totalPopulation = populationTotal;
         this.populationByDemographic = populationByRace;
         this.populationByParty = populationByParty;
         this.hasMajorityMinorityPopulation = hasMajorityMinorityPopulation;
+        this.wasMajorityMinority = this.isMajorityMinority();
 
     }
 
@@ -64,10 +65,10 @@ public class Demography {
         return populationByParty.get(politicalParty);
     }
 
-    public void changeRacePopulation(Demographic demographic, long newPopulation, AlgorithmRequestModel algorithmData){
+    public void changeRacePopulation(Demographic demographic, long newPopulation, AlgorithmRequestModel algorithmRequestModel){
         this.populationByDemographic.put(demographic,newPopulation);
         updateTotalPopulation();
-        setMajorityMinorityStatus(algorithmData);
+        setMajorityMinorityStatus(algorithmRequestModel);
     }
 
     public void changePartyPopulation(PoliticalParty politicalParty, long newPopulation){
@@ -75,12 +76,12 @@ public class Demography {
         updateTotalPopulation();
     }
 
-    public void addToRacePopulation(Demographic demographic, long additionalPopulation, AlgorithmRequestModel algorithmData){
+    public void addToRacePopulation(Demographic demographic, long additionalPopulation, AlgorithmRequestModel algorithmRequestModel){
         long currentPopulation = 0;
         if(this.hasPopulationOfDemographic(demographic)) currentPopulation = this.populationByDemographic.get(demographic);
         this.populationByDemographic.put(demographic,currentPopulation + additionalPopulation);
         updateTotalPopulation();
-        setMajorityMinorityStatus(algorithmData);
+        setMajorityMinorityStatus(algorithmRequestModel);
     }
 
     public void addToPartyPopulation(PoliticalParty politicalParty, long additionalPopulation){
@@ -118,11 +119,16 @@ public class Demography {
           return hasMajorityMinorityPopulation;
     }
 
-    private void setMajorityMinorityStatus(AlgorithmRequestModel algorithmData){
-        Demographic majorityMinorityDemographic = algorithmData.getMajorityMinorityDemographic();
-        double lowerBound = algorithmData.getMajorityMinorityMinPercentage();
-        double upperBound = algorithmData.getMajorityMinorityMaxPercentage();
+    public boolean wasMajorityMinority(){
+        return wasMajorityMinority;
+    }
+
+    private void setMajorityMinorityStatus(AlgorithmRequestModel algorithmRequestModel){
+        Demographic majorityMinorityDemographic = algorithmRequestModel.getMajorityMinorityDemographic();
+        double lowerBound = algorithmRequestModel.getMajorityMinorityMinPercentage();
+        double upperBound = algorithmRequestModel.getMajorityMinorityMaxPercentage();
         double racePopulationPercentage = getRacePopulationPercentage(majorityMinorityDemographic);
+        wasMajorityMinority = hasMajorityMinorityPopulation;
         hasMajorityMinorityPopulation = lowerBound <= racePopulationPercentage && racePopulationPercentage <= upperBound;
     }
 
@@ -136,7 +142,7 @@ public class Demography {
             populationByDemographyClone.put(demographic,populationByDemographic.get(demographic).longValue());
         }
         return new Demography(totalPopulation,populationByDemographyClone,populationByPartyClone,
-                this.hasMajorityMinorityPopulation);
+                this.hasMajorityMinorityPopulation, wasMajorityMinority);
     }
 
     public boolean updateTotalPopulation(){
@@ -160,6 +166,7 @@ public class Demography {
                 ", populationByDemographic=" + populationByDemographic +
                 ", populationByParty=" + populationByParty +
                 ", hasMajorityMinorityPopulation=" + hasMajorityMinorityPopulation +
+                ", wasMajorityMinority=" + wasMajorityMinority +
                 '}';
     }
 }

@@ -2,6 +2,7 @@ package com.appRestful.api.component;
 
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.SimpleGraph;
@@ -17,10 +18,11 @@ import com.google.common.collect.Sets;
 
 public class State extends SimpleGraph<Cluster,Edge> {
     private int precinctQuantity;
-    private Set<Precinct> precincts;
+    private Map<String,Precinct> precincts;
     private Set<Cluster[]> candidatePairs;
     private Set<District> majorityMinorityDist;
     private RunStatistics statistics;
+    private int totalPopulation;
 
     public State(Class<? extends Edge> edgeClass) {
         super(edgeClass);
@@ -28,12 +30,12 @@ public class State extends SimpleGraph<Cluster,Edge> {
     }
 
     public State(Supplier<Cluster> vertexSupplier, Supplier<Edge> edgeSupplier) {
-        super(vertexSupplier, edgeSupplier, Utility.NOT_WEIGHTED);
+        super(vertexSupplier, edgeSupplier, Utility.notWeighted);
         initiateState();
     }
 
     private void initiateState(){
-        this.precincts = new HashSet<>();
+        this.precincts = new TreeMap<>();
         this.majorityMinorityDist = new HashSet<>();
         this.statistics = new RunStatistics();
     }
@@ -91,60 +93,79 @@ public class State extends SimpleGraph<Cluster,Edge> {
         }
     }
 
-    public void joinCandidatePairs(AlgorithmRequestModel algorithmData){
+    public void joinCandidatePairs(AlgorithmRequestModel algorithmRequestModel){
         for (Cluster[] candidatePair : candidatePairs){
-            mergeClusters(candidatePair[Utility.source],candidatePair[Utility.destination],algorithmData);
-            if(algorithmData.getGoalDistricts() == getClustersQuantity()) return;
+            mergeClusters(candidatePair[Utility.source],candidatePair[Utility.destination], algorithmRequestModel);
+            if(algorithmRequestModel.getGoalDistricts() == getClustersQuantity()) return;
         }
     }
 
     public void removeCluster(Cluster cluster){
         this.removeVertex(cluster);
-        this.precinctQuantity -= cluster.getPrecincts().size();
     }
 
     public void addCluster(Cluster cluster){
         this.addVertex(cluster);
-        this.precinctQuantity += cluster.getPrecincts().size();
+        if(cluster.getClusterData().getDemographyData().isMajorityMinority()){
+            majorityMinorityDist.add((District) cluster);
+        }
+        totalPopulation += cluster.getClusterData().getDemographyData().getTotalPopulation();
     }
 
     public Set<Cluster> getClusters(){
         return this.vertexSet();
     }
 
-    public int getPrecinctQuantity(){
-        return precinctQuantity;
+    public Set<District> getDistricts(){
+        return getClusters().stream().map(District.class::cast).collect(Collectors.toSet());
     }
 
+    public List<District> getDistrictsAsList(){
+        return getClusters().stream().map(District.class::cast).collect(Collectors.toList());
+    }
 
     public int getClustersQuantity(){
         return this.getClusters().size();
     }
 
 
-    private void mergeClusters(Cluster source, Cluster destination, AlgorithmRequestModel algorithmData){
+    private void mergeClusters(Cluster source, Cluster destination, AlgorithmRequestModel algorithmRequestModel){
+        this.removeFromMajorityMinority(source);
+        this.removeFromMajorityMinority(destination);
         this.removeEdge(source,destination);
 
         for(Precinct precinct : source.vertexSet()) {
-            destination.addPrecinct(precinct,algorithmData);
+            destination.addPrecinct(precinct, algorithmRequestModel);
         }
 
         Set<Edge[]> commonEdges = getCommonEdges(source,destination);
         Map<Edge,Cluster> distinctEdges = getDistinctEdges(source,destination);
 
         for(Edge[] pairs: commonEdges){
-            mergeEdge(destination,pairs[Utility.source],pairs[Utility.destination],algorithmData);
+            mergeEdge(destination,pairs[Utility.source],pairs[Utility.destination], algorithmRequestModel);
         }
 
         for(Edge distinctEdge : distinctEdges.keySet()){
             Cluster neighbor = distinctEdges.get(distinctEdge);
-            Edge newEdge = new Edge(destination,neighbor,algorithmData);
+            Edge newEdge = new Edge(destination,neighbor, algorithmRequestModel);
             this.removeEdge(distinctEdge);
             this.addEdge(destination,neighbor,newEdge);
         }
 
+        this.addToMajorityMinority(destination);
         this.removeCluster(source);
+    }
 
+    private void removeFromMajorityMinority(Cluster cluster){
+        if(majorityMinorityDist.contains(cluster)){
+            majorityMinorityDist.remove(cluster);
+        }
+    }
+
+    private void addToMajorityMinority(Cluster cluster){
+        if(cluster.getClusterData().getDemographyData().isMajorityMinority()){
+            majorityMinorityDist.add((District) cluster);
+        }
     }
 
     private Set<Cluster> findCommonNeighbors(Cluster source, Cluster destination){
@@ -179,25 +200,21 @@ public class State extends SimpleGraph<Cluster,Edge> {
         return distinctEdges;
     }
 
-    private void mergeEdge(Cluster destination,Edge sourceEdge, Edge destinationEdge,AlgorithmRequestModel algorithmData){
+    private void mergeEdge(Cluster destination, Edge sourceEdge, Edge destinationEdge, AlgorithmRequestModel algorithmRequestModel){
         Cluster neighbor = Graphs.getOppositeVertex(this,destinationEdge,destination);
-        Edge newEdge  = new Edge(neighbor,destination,algorithmData);
+        Edge newEdge  = new Edge(neighbor,destination, algorithmRequestModel);
         this.removeEdge(sourceEdge);
         this.removeEdge(destinationEdge);
         this.addEdge(neighbor,destination,newEdge);
     }
 
 
-    private boolean attemptPrecinctMove(Cluster cluster1, Cluster cluster2, PrecinctSelection precintSelection){
-
+    private boolean attemptPrecinctMove(){
         return false;
     }
 
-
-
-
     public Set<District> getMajorityMinorityDist(){
-        return null;
+        return majorityMinorityDist;
     }
 
 
@@ -219,29 +236,26 @@ public class State extends SimpleGraph<Cluster,Edge> {
        return (long) Math.floor(sortedClusters.size() * Utility.targetClusterPercentageMerged);
     }
 
-    public void exportState(){
-
-    }
-
     //TODO:Check precinctQuantity Update
     public Object clone(){
         State state = new State(Edge.class);
-        state.precinctQuantity = this.precinctQuantity;
         Map<Cluster,Cluster> cloneMapping = cloneClusters(state);
         cloneEdges(state,cloneMapping);
-        //clonePrecincts(state);
-        state.majorityMinorityDist = new HashSet<>();
+        cloneMajorityMinority(state,cloneMapping);
         state.statistics = new RunStatistics();
         return state;
     }
 
     private Map<Cluster,Cluster> cloneClusters(State state){
+        Map<String,Precinct> allPrecincts = new TreeMap<>();
         Map<Cluster,Cluster> cloneMapping = new HashMap<>();
         for(Cluster cluster:vertexSet()){
             Cluster cloneCluster = (Cluster) cluster.clone();
             state.addVertex(cloneCluster);
             cloneMapping.put(cloneCluster,cloneCluster);
+            addPrecinctsToGlobalMapping(cluster,allPrecincts);
         }
+        resetPrecinctNeighbors(allPrecincts);
         return cloneMapping;
     }
 
@@ -257,10 +271,24 @@ public class State extends SimpleGraph<Cluster,Edge> {
         }
     }
 
-    private void clonePrecincts(State state){
-        state.precincts = new HashSet<>();
-        for(Precinct precinct:precincts){
-            state.precincts.add((Precinct) precinct.clone());
+    private void addPrecinctsToGlobalMapping(Cluster cluster, Map<String,Precinct> allPrecincts){
+        for(Precinct precinct : cluster.getPrecincts()){
+            allPrecincts.put(precinct.getPrecinctID(),precinct);
+        }
+    }
+
+    private void resetPrecinctNeighbors(Map<String,Precinct> allPrecincts){
+        for(Cluster cluster: this.getClusters()){
+            for(Precinct precinct : cluster.getPrecincts()){
+                precinct.resetNeighbors(allPrecincts);
+            }
+        }
+    }
+
+    private void cloneMajorityMinority(State newState, Map<Cluster,Cluster> clusterMapping){
+        newState.majorityMinorityDist = new HashSet<>();
+        for(District district : majorityMinorityDist){
+            newState.majorityMinorityDist.add((District) clusterMapping.get(district));
         }
     }
 
@@ -275,4 +303,8 @@ public class State extends SimpleGraph<Cluster,Edge> {
         }
     }
 
+    public int getTotalPopulation() {
+        return totalPopulation;
+    }
 }
+

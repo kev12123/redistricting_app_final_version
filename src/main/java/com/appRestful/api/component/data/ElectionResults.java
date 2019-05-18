@@ -9,7 +9,6 @@ import java.util.TreeMap;
 import com.appRestful.api.enums.Operation;
 
 public class ElectionResults {
-	
     private Map<Integer,Result> yearlyResults;
 
     public ElectionResults(Collection<Result> results) {

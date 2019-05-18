@@ -6,12 +6,12 @@ import java.util.Map;
 import com.appRestful.api.component.State;
 
 public class Batch {
-	
-	static Map<State, RunStatistics> runStats;
+
+    static Map<State, RunStatistics> runStats;
     static boolean stopBatch = false;
 
     public static void startBatch(Algorithm algorithm, ObjectiveFunction objectiveFunction){
-        algorithm.initializeAlgorithm(objectiveFunction,algorithm.getAlgorithmData());
+        algorithm.initializeAlgorithm(objectiveFunction,algorithm.getAlgorithmRequestModel());
         while(!algorithm.isFinished()){
             try {
                 if (stopBatch) return;
@@ -39,4 +39,5 @@ public class Batch {
         stopBatch  = true;
         return 0;
     }
+
 }

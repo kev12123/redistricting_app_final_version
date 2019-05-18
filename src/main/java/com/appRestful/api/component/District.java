@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.appRestful.api.component.data.Data;
+import com.appRestful.api.model.request.AlgorithmRequestModel;
+
 
 public class District extends Cluster {
 
@@ -19,6 +21,12 @@ public class District extends Cluster {
         super(vertexSupplier, edgeSupplier, weighted);
     }
 
+
+    public void addPrecinct(Precinct precinct, AlgorithmRequestModel algorithmRequestModel){
+        super.addPrecinct(precinct, algorithmRequestModel);
+
+    }
+
     @Override
     public Object clone() {
         District district = new District(Edge.class);
@@ -26,9 +34,11 @@ public class District extends Cluster {
         district.data = (Data) data.clone();
         Map<Precinct,Precinct> cloneMapping = clonePrecincts(district);
         cloneEdges(district,cloneMapping);
+        cloneBorderPrecincts(district,cloneMapping);
         System.out.println("District " + district.getPrimaryId() + " cloned");
         return district;
     }
+
 
     @Override
     public String toString() {
