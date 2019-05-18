@@ -13,7 +13,7 @@ $('#registerSubmit').click(function(event){
         data: JSON.stringify({
             email: email,
             username: uname,
-            password: pword
+            passWord: pword
         }),
         contentType: 'application/json',
         success: function (returnUser) {

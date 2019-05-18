@@ -4,7 +4,7 @@ public class UserDetailsRequestModel {
 	
 	private String username;
 	private String email;
-	private String passWord;
+	private String password;
 	
 	public String getEmail() {
 		return email;
@@ -13,10 +13,10 @@ public class UserDetailsRequestModel {
 		this.email = email;
 	}
 	public String getPassWord() {
-		return passWord;
+		return password;
 	}
-	public void setPassWord(String passWord) {
-		this.passWord = passWord;
+	public void setPassWord(String password) {
+		this.password = password;
 	}
 	public String getUsername() {
 		return username;

@@ -2,8 +2,10 @@ package com.appRestful.api.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.BeanUtils;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.appRestful.api.entity.CountyEntity;
 import com.appRestful.api.entity.PopulationEntity;
 import com.appRestful.api.entity.PrecinctEntity;
+import com.appRestful.api.enums.Measure;
 import com.appRestful.api.model.request.AlgorithmRequestModel;
 import com.appRestful.api.model.request.PopulationRequestModel;
 import com.appRestful.api.model.response.PopulationResp;
@@ -52,16 +55,28 @@ public class AlgorithmController {
 	VotingRepository votingRepo;
 	
 	@PostMapping("/runAlgorithm")
-	public ResponseEntity runAlgorithm(@RequestBody AlgorithmRequestModel algorithmDetails) {
+	public ResponseEntity runAlgorithm(@RequestBody AlgorithmRequestModel algorithmData) {
 		
 		//1.create objective function with user input in AlgorithmRequestModel
+		 Map<Measure,Double>  weights = new HashMap();
+		 weights.put(Measure.EFFICENCY_GAP, algorithmData.getEfficiencyGap());
+		 weights.put(Measure.POLSBY_POPPER, algorithmData.getPolsbyPopper());
+		 weights.put(Measure.EDGE_CUT, algorithmData.getEdgeCut());
+		 weights.put(Measure.CONVEX_HULL, algorithmData.getConvexHull());
+		 weights.put(Measure.LENGTH_WIDTH_RATIO, algorithmData.getLengthWithRatio());
+		 weights.put(Measure.MAJORITY_MINORITY, (algorithmData.getMajorityMinorityWeight()));
+		 weights.put(Measure.MEAN_MEDIAN, algorithmData.getMeanMedian());
+		 weights.put(Measure.POPULATION_EQUALITY, algorithmData.getPopulationEquality());
+	
+		
+		 
+		 
 		
 		//2. AlgorithmObject passing in the state as parameters, data for state will be retrieved from the data
 		
 		//3. Call initialize method on algorithm 
 		
 		//4. algorithm run
-		
 		StateDto state = null;
 		CountyDto county = null;
 		Set<Long> precincts =  new HashSet();

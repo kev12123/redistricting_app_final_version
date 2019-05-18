@@ -6,8 +6,16 @@ public class AlgorithmRequestModel {
 	
 	private int goalDistricts;
     private long targetPopulation;
+    private double lengthWithRatio;
     private double majorityMinorityMinPercentage;
+    private double polsbyPopper;
+    private double edgeCut;
+    private double convexHull;
+    private double meanMedian;
+    private double populationEquality;
+    private double efficiencyGap;
     private double majorityMinorityMaxPercentage;
+    private double majorityMinorityWeight;
     private Demographic majorityMinorityDemographic;
     private int goalMajorityMinorityDistricts;
     private int iterationQuantity;
@@ -76,5 +84,69 @@ public class AlgorithmRequestModel {
     public void setAllowedPopulationDeviation(double allowedPopulationDeviation) {
         this.allowedPopulationDeviation = allowedPopulationDeviation;
     }
+
+	public double getPolsbyPopper() {
+		return polsbyPopper;
+	}
+
+	public void setPolsbyPopper(double polsbyPopper) {
+		this.polsbyPopper = polsbyPopper;
+	}
+
+	public double getEdgeCut() {
+		return edgeCut;
+	}
+
+	public void setEdgeCut(double edgeCut) {
+		this.edgeCut = edgeCut;
+	}
+
+	public double getEfficiencyGap() {
+		return efficiencyGap;
+	}
+
+	public void setEfficiencyGap(double efficiencyGap) {
+		this.efficiencyGap = efficiencyGap;
+	}
+
+	public double getConvexHull() {
+		return convexHull;
+	}
+
+	public void setConvexHull(double convexHull) {
+		this.convexHull = convexHull;
+	}
+
+	public double getLengthWithRatio() {
+		return lengthWithRatio;
+	}
+
+	public void setLengthWithRatio(double lengthWithRatio) {
+		this.lengthWithRatio = lengthWithRatio;
+	}
+
+	public double getMeanMedian() {
+		return meanMedian;
+	}
+
+	public void setMeanMedian(double meanMedian) {
+		this.meanMedian = meanMedian;
+	}
+
+	public double getPopulationEquality() {
+		return populationEquality;
+	}
+
+	public void setPopulationEquality(double populationEquality) {
+		this.populationEquality = populationEquality;
+	}
+
+	public double getMajorityMinorityWeight() {
+		return majorityMinorityWeight;
+	}
+
+	public void setMajorityMinorityWeight(double majorityMinorityWeight) {
+		this.majorityMinorityWeight = majorityMinorityWeight;
+	}
 	
 }

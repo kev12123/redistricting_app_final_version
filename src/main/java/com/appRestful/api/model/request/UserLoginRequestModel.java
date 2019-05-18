@@ -3,7 +3,7 @@ package com.appRestful.api.model.request;
 public class UserLoginRequestModel {
 	
 	private String username;
-	private String password;
+	private String passWord;
 	
 	public String getUsername() {
 		return username;
@@ -12,9 +12,9 @@ public class UserLoginRequestModel {
 		this.username = username;
 	}
 	public String getPassword() {
-		return password;
+		return passWord;
 	}
 	public void setPassword(String password) {
-		this.password = password;
+		this.passWord = password;
 	}
 }
