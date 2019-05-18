@@ -14,48 +14,6 @@ L.tileLayer(
 var info = L.control();
 var stateID;
 
-function getColor(i) {
-	return new Color(getRGB(i));
-}
-
-function getRGB(index) {
-	var p = getPattern(index);
-	return getElement(p[0]) << 16 | getElement(p[1]) << 8 | getElement(p[2]);
-}
-
-function getElement(index) {
-	var value = index - 1;
-	var v = 0;
-	for (var i = 0; i < 8; i++) {
-			v = v | (value & 1);
-			v <<= 1;
-			value >>= 1;
-	}
-	v >>= 1;
-	return v & 0xFF;
-}
-
-function getPattern(index) {
-	var n = Math.cbrt(index);
-	index -= (n*n*n);
-	var p = new int[3];
-	Arrays.fill(p,n);
-	if (index == 0) {
-			return p;
-	}
-	index--;
-	var v = index % 3;
-	index = index / 3;
-	if (index < n) {
-			p[v] = index % n;
-			return p;
-	}
-	index -= n;
-	p[v      ] = index / n;
-	p[++v % 3] = index % n;
-	return p;
-}
-
 function getRandomColor() {
 	var letters = '0123456789ABCDEF';
 	var color = '#';
@@ -66,8 +24,8 @@ function getRandomColor() {
 }
 
 // get color depending on population density value
-function getColor(district) {
-	return getColor(district);
+function getColor() {
+	return getRandomColor();
 }
 
 function style(features) {
@@ -77,7 +35,8 @@ function style(features) {
 		color: 'white',
 		dashArray: '3',
 		fillOpacity: 0.7,
-		fillColor: getColor(features.properties.GEO_ID)
+		fillColor: getColor()
+		// fillColor: getColor(features.properties.GEO_ID)
 	};
 }
 
@@ -185,9 +144,11 @@ var mn_precincts_layer = new L.GeoJSON(mn_precincts_geojson, {
 	onEachFeature: showMNPrecinctInfo
 });
 var md_precincts_layer = new L.GeoJSON(md_precincts_geojson, {
+	style: style,
 	onEachFeature: showMDPrecinctInfo
 });
 var fl_precincts_layer = new L.GeoJSON(fl_precincts_geojson, {
+	style: style,
 	onEachFeature: showFLPrecinctInfo
 });
 
@@ -240,11 +201,16 @@ function showFLPrecincts(feature, layer) {
 function showMNPrecinctInfo(feature, layer) {
 	layer.on('mouseover', function(e) {
 		console.log(feature.properties);
-
+		var totalPopulation = parseInt(feature.properties.republican_vote) + parseInt(feature.properties.democratic_vote) + parseInt(feature.properties.other_vote);
+		var demographics = "Black: " + feature.properties.black_pop
+										 + "<br>Caucasian: " + feature.properties.white_pop
+										 + "<br>Asian: " + feature.properties.asian_pop
+										 + "<br>Other: " + feature.properties.other_race_pop
+										 + "<br>Total Population: " + totalPopulation;
 
 		var popup = L.popup()
    	.setLatLng(e.latlng) 
-   	.setContent(feature.properties.black_pop)
+   	.setContent(demographics)
   	.openOn(map);
 	});
 }
