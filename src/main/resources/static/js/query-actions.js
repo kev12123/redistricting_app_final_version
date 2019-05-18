@@ -77,7 +77,7 @@ $('#configSubmit').click(function(event) {
             stateID: stateID,
             goalDistricts: goalDistricts,
             minorityMajority: minorityMajority,
-            targetDemo: targetDemo,
+            majorityMinorityDemographic: targetDemo,
             numGoalDistricts: numGoalDistricts,
             polsbyPopper: polsbyPopper,
             edgeCut: edgeCut,

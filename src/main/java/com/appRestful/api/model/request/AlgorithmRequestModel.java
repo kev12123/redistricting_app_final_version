@@ -5,6 +5,7 @@ import com.appRestful.api.enums.Demographic;
 public class AlgorithmRequestModel {
 	
 	private int goalDistricts;
+	private int stateid;
     private long targetPopulation;
     private double lengthWithRatio;
     private double majorityMinorityMinPercentage;
@@ -16,7 +17,7 @@ public class AlgorithmRequestModel {
     private double efficiencyGap;
     private double majorityMinorityMaxPercentage;
     private double majorityMinorityWeight;
-    private Demographic majorityMinorityDemographic;
+    private String majorityMinorityDemographic;
     private int goalMajorityMinorityDistricts;
     private int iterationQuantity;
     private double allowedPopulationDeviation;
@@ -46,10 +47,10 @@ public class AlgorithmRequestModel {
     }
 
     public Demographic getMajorityMinorityDemographic() {
-        return majorityMinorityDemographic;
+        return Demographic.valueOf(majorityMinorityDemographic.toUpperCase());
     }
 
-    public void setMajorityMinorityDemographic(Demographic majorityMinorityDemographic) {
+    public void setMajorityMinorityDemographic(String majorityMinorityDemographic) {
         this.majorityMinorityDemographic = majorityMinorityDemographic;
     }
 
@@ -147,6 +148,14 @@ public class AlgorithmRequestModel {
 
 	public void setMajorityMinorityWeight(double majorityMinorityWeight) {
 		this.majorityMinorityWeight = majorityMinorityWeight;
+	}
+
+	public int getStateid() {
+		return stateid;
+	}
+
+	public void setStateid(int stateid) {
+		this.stateid = stateid;
 	}
 	
 }
