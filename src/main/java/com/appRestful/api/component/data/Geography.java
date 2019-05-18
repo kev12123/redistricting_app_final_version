@@ -66,9 +66,22 @@ public class Geography {
     public void updateExternalEdgeCount(int externalEdgeChange){
         externalEdges += externalEdgeChange;
     }
+    
+    public Geometry getGeometry() {
+    		return polygon;
+    }
+    
+    public void setGeometry(Geometry geometry) {
+    		this.polygon = geometry;
+    }
 
     public Object clone(){
-        return new Geography(county,polygon.getCoordinates(),externalEdges,internalEdges);
+    		Coordinate[] coordinates = polygon.getCoordinates(); 
+    		Coordinate[] coordinatesClone = new Coordinate[coordinates.length];
+    		for(int i = 0; i < coordinates.length;i++) {
+    			coordinatesClone[i] = new Coordinate(coordinates[i].x,coordinates[i].y);
+    		}
+        return new Geography(county,coordinatesClone,externalEdges,internalEdges);
     }
 
     @Override
