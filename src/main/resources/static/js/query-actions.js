@@ -71,7 +71,7 @@ $('#configSubmit').click(function(event) {
 
     $.ajax({
         type: 'POST',
-        url: '/users/login',
+        url: '/map/runAlgorithm',
         dataType: 'json',
         data: JSON.stringify({
             goalDistricts: goalDistricts,

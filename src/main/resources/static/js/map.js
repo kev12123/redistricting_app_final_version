@@ -13,6 +13,48 @@ L.tileLayer(
 // control that shows state info on hover
 var info = L.control();
 
+function getColor(i) {
+	return new Color(getRGB(i));
+}
+
+function getRGB(index) {
+	var p = getPattern(index);
+	return getElement(p[0]) << 16 | getElement(p[1]) << 8 | getElement(p[2]);
+}
+
+function getElement(index) {
+	var value = index - 1;
+	var v = 0;
+	for (var i = 0; i < 8; i++) {
+			v = v | (value & 1);
+			v <<= 1;
+			value >>= 1;
+	}
+	v >>= 1;
+	return v & 0xFF;
+}
+
+function getPattern(index) {
+	var n = Math.cbrt(index);
+	index -= (n*n*n);
+	var p = new int[3];
+	Arrays.fill(p,n);
+	if (index == 0) {
+			return p;
+	}
+	index--;
+	var v = index % 3;
+	index = index / 3;
+	if (index < n) {
+			p[v] = index % n;
+			return p;
+	}
+	index -= n;
+	p[v      ] = index / n;
+	p[++v % 3] = index % n;
+	return p;
+}
+
 function getRandomColor() {
 	var letters = '0123456789ABCDEF';
 	var color = '#';
@@ -22,33 +64,19 @@ function getRandomColor() {
 	return color;
 }
 
-var color1 = getRandomColor();
-var color2 = getRandomColor();
-var color3 = getRandomColor();
-var color4 = getRandomColor();
-var color5 = getRandomColor();
-var color6 = getRandomColor();
-var color7 = getRandomColor();
-var color8 = getRandomColor();
 // get color depending on population density value
 function getColor(district) {
-	return district > 7
-		? color1
-		: district > 6
-			? color2
-			: district > 5
-				? color3
-				: district > 4 ? color4 : district > 3 ? color5 : district > 2 ? color6 : district > 1 ? color7 : color8;
+	return getColor(district);
 }
 
-function style(feature) {
+function style(features) {
 	return {
 		weight: 2,
 		opacity: 1,
 		color: 'white',
 		dashArray: '3',
 		fillOpacity: 0.7,
-		fillColor: getColor(feature.properties.CongDist)
+		fillColor: getColor(features.properties.GEO_ID)
 	};
 }
 
@@ -152,6 +180,7 @@ var fl_districts_layer = new L.GeoJSON(fl_districts_geojson, {
 });
 
 var mn_precincts_layer = new L.GeoJSON(mn_precincts_geojson, {
+	style: style,
 	onEachFeature: showMNPrecinctInfo
 });
 var md_precincts_layer = new L.GeoJSON(md_precincts_geojson, {
@@ -257,10 +286,10 @@ function findMinnesota() {
 			layerGroup.addLayer(mn_districts_layer);
 		}
 		// L.geoJson(mn_precincts_geojson).addTo(map);
-					// geojson = L.geoJson(mn_precincts_geojson, {
-			// 	style: style,
-			// 	onEachFeature: onEachFeature
-			// }).addTo(map);
+		// 			geojson = L.geoJson(mn_precincts_geojson, {
+		// 		style: style,
+		// 		onEachFeature: onEachFeature
+		// 	}).addTo(map);
 	});
 }
 
