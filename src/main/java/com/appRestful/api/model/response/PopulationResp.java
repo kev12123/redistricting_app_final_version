@@ -1,49 +1,40 @@
-package com.appRestful.api.entity;
+package com.appRestful.api.model.response;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
-@Entity
-@Table(name="Population")
-public class PopulationEntity {
+public class PopulationResp {
 	
-	//INSERT INTO population(precinctid ,  blackPopulation  , whitePopulation  , 
-	//other  , pacificIslanderPoplation  , asianPopulation  , alaskanAndNativeAmericanPopulation) VALUES (%s, %s, %s , %s , %s,%s,%s)"
+
 	
-	@Id
-	private Long precinctid;
-	
-	@Column(nullable=false)
 	private Long blackPopulation;
 	
-	@Column(nullable=false)
 	private Long whitePopulation;
 	
-	@Column(nullable=false)
 	private Long otherPopulation;
 	
-	@Column(nullable=false)
 	private Long pacificIslanderPopulation;
 	
-	@Column(nullable=false)
 	private Long asianPopulation;
 	
-	@Column(nullable=false)
 	private Long alaskanNativeAmericanPopulation;
-
-	public Long getPrecinctid() {
-		return precinctid;
-	}
-
-	public void setPrecinctid(Long precinctid) {
-		this.precinctid = precinctid;
-	}
+	
+	public PopulationResp() {}
 
 	public Long getBlackPopulation() {
 		return blackPopulation;
 	}
+	
+	public PopulationResp(Long blackPopulation, Long whitePopulation, Long otherPopulation,
+			Long pacificIslanderPopulation, Long asianPopulation, Long alaskanNativeAmericanPopulation) {
+		super();
+		this.blackPopulation = blackPopulation;
+		this.whitePopulation = whitePopulation;
+		this.otherPopulation = otherPopulation;
+		this.pacificIslanderPopulation = pacificIslanderPopulation;
+		this.asianPopulation = asianPopulation;
+		this.alaskanNativeAmericanPopulation = alaskanNativeAmericanPopulation;
+	}
+
 
 	public void setBlackPopulation(Long blackPopulation) {
 		this.blackPopulation = blackPopulation;
@@ -88,6 +79,5 @@ public class PopulationEntity {
 	public void setAlaskanNativeAmericanPopulation(Long alaskanNativeAmericanPopulation) {
 		this.alaskanNativeAmericanPopulation = alaskanNativeAmericanPopulation;
 	}
-	
 
 }

@@ -7,5 +7,5 @@ import com.appRestful.api.shared.dto.CountyDto;
 
 public interface CountyService {
 	
-    List<CountyDto> findByStateId(int stateid);
+    List<CountyDto> findByCountyIdStateid(int stateid);
 }
