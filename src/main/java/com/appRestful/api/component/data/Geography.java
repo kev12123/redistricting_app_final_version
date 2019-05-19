@@ -1,5 +1,8 @@
 package com.appRestful.api.component.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -11,12 +14,12 @@ public class Geography {
     private int externalEdges;
     private int internalEdges;
 
-    public Geography(String county, Coordinate[] boundary) {
+    public Geography(String county, List<Coordinate> boundary) {
         this.county = county;
-        this.polygon = factory.createPolygon(boundary);
+        this.polygon = factory.createPolygon(boundary.toArray(new Coordinate[] {}));
     }
 
-    private Geography(String county, Coordinate[] boundary,int externalEdges, int internalEdges){
+    private Geography(String county, List<Coordinate> boundary,int externalEdges, int internalEdges){
         this(county,boundary);
         this.externalEdges = externalEdges;
         this.internalEdges = internalEdges;
@@ -77,9 +80,9 @@ public class Geography {
 
     public Object clone(){
     		Coordinate[] coordinates = polygon.getCoordinates(); 
-    		Coordinate[] coordinatesClone = new Coordinate[coordinates.length];
+    		List<Coordinate> coordinatesClone = new ArrayList<>();
     		for(int i = 0; i < coordinates.length;i++) {
-    			coordinatesClone[i] = new Coordinate(coordinates[i].x,coordinates[i].y);
+    			coordinatesClone.add(i,new Coordinate(coordinates[i].x,coordinates[i].y));
     		}
         return new Geography(county,coordinatesClone,externalEdges,internalEdges);
     }

@@ -3,6 +3,7 @@ package com.appRestful.api;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.locationtech.jts.geom.Coordinate;
@@ -27,7 +28,7 @@ import com.appRestful.api.component.Precinct;
 public class ComponentTester {
 
     private static int nextId = 0;
-    private static final int NUMBER_OF_CLUSTERS = 1000;
+    private static final int NUMBER_OF_CLUSTERS = 3000;
     private static final int GOAL_DISTRICTS = 8;
     private int numEdges = 0;
     private long start;
@@ -105,11 +106,11 @@ public class ComponentTester {
         AlgorithmRequestModel algorithmRequestModel = new AlgorithmRequestModel();
         algorithmRequestModel.setGoalDistricts(GOAL_DISTRICTS);
         algorithmRequestModel.setGoalMajorityMinorityDistricts(1);
-        algorithmRequestModel.setMajorityMinorityDemographic(Demographic.BLACK);
+        algorithmRequestModel.setMajorityMinorityDemographic(Demographic.BLACK.toString());
         algorithmRequestModel.setMajorityMinorityMinPercentage(0);
         algorithmRequestModel.setMajorityMinorityMaxPercentage(1);
         algorithmRequestModel.setTargetPopulation(300);
-        algorithmRequestModel.setIterationQuantity(100);
+        algorithmRequestModel.setIterationQuantity(100000);
 
         return algorithmRequestModel;
     }
@@ -136,7 +137,7 @@ public class ComponentTester {
         int populationSize = populationSizes[(int)(Math.random() * 3)];
         int equalRaceDivisor = 3;
         int equalPartDivisor = 2;
-        demographics0.put(Demographic.WHITE,(long)populationSize/equalRaceDivisor);
+        demographics0.put(Demographic.CAUCASIAN,(long)populationSize/equalRaceDivisor);
         demographics0.put(Demographic.BLACK,(long)populationSize/equalRaceDivisor);
         demographics0.put(Demographic.HISPANIC,(long)populationSize/equalRaceDivisor);
         Map<PoliticalParty,Long> parties0 = new HashMap<>();
@@ -159,10 +160,16 @@ public class ComponentTester {
     public Geography createTestGeography(){
         Coordinate coordinate1 = new Coordinate(0,0);
         Coordinate coordinate2 = new Coordinate(5,0);
-        Coordinate coordinate4 = new Coordinate(5,5);
-        Coordinate coordinate3 = new Coordinate(0,5);
+        Coordinate coordinate3 = new Coordinate(5,5);
+        Coordinate coordinate4 = new Coordinate(0,5);
         Coordinate coordinate5 = new Coordinate(0,0);
-        return new Geography((Math.random() > .5) ? "Nassau":"Suffolk",new Coordinate[]{coordinate1,coordinate2,coordinate3,coordinate4,coordinate5});
+        List<Coordinate> coordinates= new ArrayList<Coordinate>();
+        coordinates.add(coordinate1);
+        coordinates.add(coordinate2);
+        coordinates.add(coordinate3);
+        coordinates.add(coordinate4);
+        coordinates.add(coordinate5);
+        return new Geography((Math.random() > .5) ? "Nassau":"Suffolk",coordinates);
     }
 
     public int getNumEdges() {

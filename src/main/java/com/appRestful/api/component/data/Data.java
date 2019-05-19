@@ -1,5 +1,7 @@
 package com.appRestful.api.component.data;
 
+import java.util.List;
+
 import org.locationtech.jts.geom.Coordinate;
 
 public class Data {
@@ -15,7 +17,7 @@ public class Data {
         this.objective = new Objective();
     }
 
-    public Data(String county, Coordinate[] polygonBoundary){
+    public Data(String county, List<Coordinate> polygonBoundary){
         this.demography = new Demography();
         this.geography = new Geography(county,polygonBoundary);
         this.electionResults = new ElectionResults();
