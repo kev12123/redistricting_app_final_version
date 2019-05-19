@@ -30,6 +30,7 @@ import com.appRestful.api.component.data.Demography;
 import com.appRestful.api.component.data.ElectionResults;
 import com.appRestful.api.component.data.Geography;
 import com.appRestful.api.component.data.Result;
+import com.appRestful.api.entity.CoordinateEntity;
 import com.appRestful.api.entity.CountyEntity;
 import com.appRestful.api.entity.PopulationEntity;
 import com.appRestful.api.entity.PrecinctEntity;
@@ -40,6 +41,7 @@ import com.appRestful.api.enums.PoliticalParty;
 import com.appRestful.api.model.request.AlgorithmRequestModel;
 import com.appRestful.api.model.request.PopulationRequestModel;
 import com.appRestful.api.model.response.PopulationResp;
+import com.appRestful.api.repository.CoordinatesRepository;
 import com.appRestful.api.repository.CountyRepository;
 import com.appRestful.api.repository.PopulationRepository;
 import com.appRestful.api.repository.PrecinctRepository;
@@ -69,8 +71,13 @@ public class AlgorithmController {
 	@Autowired
 	VotingRepository votingRepo;
 	
+	@Autowired
+	CoordinatesRepository coordinateRepo;
+	
 	@PostMapping("/runAlgorithm")
 	public ResponseEntity runAlgorithm(@RequestBody AlgorithmRequestModel algorithmData) {
+		long start = System.nanoTime();
+		long count = 0;
 		
 		 Map<String,Cluster> clusters = new HashMap();
 		 
@@ -88,23 +95,12 @@ public class AlgorithmController {
 				for(PrecinctEntity pEntity: precinctRepo.findByCountyidAndStateid(countyt.getCountyId().getId() , countyt.getCountyId().getStateid())) {
 					
 					//Allocate precinct population
-					Map<Demographic,Long> demographics = new HashMap();
-					long totalPopulation = 0;
-					//set population
-					PopulationEntity popul = populationRepo.findByPrecinctid(pEntity.getId()); 
-					System.out.println(popul.getBlackPopulation());
-					demographics.put(Demographic.BLACK, popul.getBlackPopulation());
-					totalPopulation+=popul.getBlackPopulation();
-					demographics.put(Demographic.CAUCASIAN, popul.getWhitePopulation());
-					totalPopulation+=popul.getWhitePopulation();
-					demographics.put(Demographic.HISPANIC, popul.getOtherPopulation());
-					totalPopulation+=popul.getOtherPopulation();
+					int totalPopulation = 0;
+					Map<Demographic,Long> demographics = createDemographics (pEntity.getId() , populationRepo , totalPopulation);
 					
 					//Allocate political party data
-					Map<PoliticalParty,Long> parties = new HashMap();
 					VotingEntity votes = votingRepo.findByPrecinctid(pEntity.getId());
-						parties.put(PoliticalParty.DEMOCRAT , (votes != null) ? votes.getDemocraticVote() : 0);
-					parties.put(PoliticalParty.REPUBLICAN , (votes != null) ? votes.getRepublicanVote() : 0);
+					Map<PoliticalParty,Long> parties = createElectionData(votes , pEntity.getId());
 					
 					//Create demography object
 					Demography demography = new Demography(totalPopulation,demographics,parties,algorithmData);
@@ -112,20 +108,16 @@ public class AlgorithmController {
 					//Create Result object
 					Result result = new Result(2006,(votes != null) ? votes.getDemocraticVote() : 0,(votes != null) ? votes.getRepublicanVote() : 0);
 					
-					Collection<Result> results = new ArrayList();
+					Collection<Result> results = new ArrayList<Result>();
 					results.add(result);
 					
 					//create election results object
 					ElectionResults electionResults = new ElectionResults(results);
+				
+					List<Coordinate> coordinatesData =  createPrecinctCoordinates(coordinateRepo ,pEntity.getId());
 					
-					//create geography object
-					Coordinate coordinate1 = new Coordinate(0,0);
-			        Coordinate coordinate2 = new Coordinate(5,0);
-			        Coordinate coordinate4 = new Coordinate(5,5);
-			        Coordinate coordinate3 = new Coordinate(0,5);
-			        Coordinate coordinate5 = new Coordinate(0,0);
 					
-			        Geography geography = new Geography(countyt.getName() , new Coordinate[] {coordinate1,coordinate2,coordinate3,coordinate4,coordinate5});
+			        Geography geography = new Geography(countyt.getName() ,coordinatesData);
 			        
 			        Data data = new Data(demography,electionResults,geography);
 			        
@@ -138,13 +130,16 @@ public class AlgorithmController {
 			        Cluster cluster = new District(Edge.class,precinct);
 			        state.addCluster(cluster);
 					clusters.put(cluster.getPrimaryId(), cluster);
-					
+					System.out.println("finished cluster " + count++);
 					
 					
 					
 				}
 			}
-	
+		
+		Long end = System.nanoTime();
+		System.out.println((end - start)/1000000000.);
+		
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
@@ -179,6 +174,51 @@ public class AlgorithmController {
 		 
 		 return weights;
 	}
+	
+	
+	public static Map<Demographic,Long> createDemographics (Long precintid , PopulationRepository populationRepo , int totalPopulation) {
+		
+		Map<Demographic,Long> demographics = new HashMap();
+		PopulationEntity popul = populationRepo.findByPrecinctid(precintid); 
+		demographics.put(Demographic.BLACK, popul.getBlackPopulation());
+		totalPopulation+=popul.getBlackPopulation();
+		demographics.put(Demographic.CAUCASIAN, popul.getWhitePopulation());
+		totalPopulation+=popul.getWhitePopulation();
+		demographics.put(Demographic.HISPANIC, popul.getOtherPopulation());
+		totalPopulation+=popul.getOtherPopulation();
+		
+		return demographics;
+		
+	}
+	
+	
+	public static 	Map<PoliticalParty,Long> createElectionData(VotingEntity votes , Long precinctId) {
+		
+		Map<PoliticalParty,Long> parties = new HashMap();
+		parties.put(PoliticalParty.DEMOCRAT , (votes != null) ? votes.getDemocraticVote() : 0);
+		parties.put(PoliticalParty.REPUBLICAN , (votes != null) ? votes.getRepublicanVote() : 0);
+		
+		return parties;
+		
+	}
+	
+	
+	public static List<Coordinate> createPrecinctCoordinates(CoordinatesRepository coordinateRepo , Long precinctId) {
+		
+		List<CoordinateEntity> coordinates = coordinateRepo.findByPrecinctid(precinctId);
+		List<Coordinate> coordinatesData = new ArrayList();
+		
+		for(CoordinateEntity coordinate:coordinates) {
+			coordinatesData.add(new Coordinate(coordinate.getCoordinateX(),coordinate.getCoordinateY()));
+			 
+		}
+		
+		return coordinatesData;
+	}
+	
+
+
+
 	
 
 
