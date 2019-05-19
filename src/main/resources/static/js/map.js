@@ -301,6 +301,7 @@ function findMaryland() {
 
 // With JQuery
 $("#majorityMinorityMin").slider({});
+$("#convexHull").slider({});
 $("#majorityMinorityMax").slider({});
 $("#populationDeviation").slider({});
 $("#population").slider({});

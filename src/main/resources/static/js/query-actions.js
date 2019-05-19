@@ -71,6 +71,7 @@ $('#configSubmit').click(function(event) {
     var goalDistricts = $('#numDistricts').val();
     var majorityMinorityMin = $('#majorityMinorityMin').val();
     var majorityMinorityMax = $('#majorityMinorityMax').val();
+    var convexHull = $('#convexHull').val();
     var targetDemo = $('#targetDemo').val();
     var numGoalDistricts = $('#numGoalDistricts').val();
     var polsbyPopper = $('#polsbyPopper').val();
@@ -89,13 +90,14 @@ $('#configSubmit').click(function(event) {
             goalDistricts: goalDistricts,
             majorityMinorityMinPercentage: majorityMinorityMin,
             majorityMinorityMaxPercentage: majorityMinorityMax,
-            targetDemo: targetDemo,
+            majorityMinorityDemographic: targetDemo,
             goalMajorityMinorityDistricts: numGoalDistricts,
+            convexHull: convexHull,
             polsbyPopper: polsbyPopper,
             edgeCut: edgeCut,
-            efficencyGap: efficencyGap,
+            efficiencyGap: efficencyGap,
             meanMedian: meanMedian,
-            populationDeviation: populationDeviation,
+            allowedPopulationDeviation: populationDeviation,
             population: population
         }),
         contentType: 'application/json',
@@ -116,6 +118,11 @@ $('#majorityMinorityMin').change(function(event) {
 $('#majorityMinorityMax').change(function(event) {
     var value = $('#majorityMinorityMax').val();
     $('#majMaxTicks').text(": " + value + " %");
+});
+
+$('#convexHull').change(function(event) {
+    var value = $('#convexHull').val();
+    $('#convexHullTicks').text(": " + value + " %");
 });
 
 $('#populationDeviation').change(function(event) {
