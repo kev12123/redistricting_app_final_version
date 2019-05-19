@@ -57,9 +57,20 @@ $('#loginSubmit').click(function(event){
     });
 });
 
+$('#logoutLabel').click(function(event) {
+    $('.loginvalid').css('display','none');
+    $('#userDisplay').text("Guest User");
+    $('#registerLabel').css('display','block');
+    $('#register').css('display','block');
+    $('#login').css('display','block');
+    $('#loginLabel').css('display','block');
+    $('#logoutLabel').css('display','none');
+});
+
 $('#configSubmit').click(function(event) {
     var goalDistricts = $('#numDistricts').val();
-    var minorityMajority = $('#majorityMinority').val();
+    var majorityMinorityMin = $('#majorityMinorityMin').val();
+    var majorityMinorityMax = $('#majorityMinorityMax').val();
     var targetDemo = $('#targetDemo').val();
     var numGoalDistricts = $('#numGoalDistricts').val();
     var polsbyPopper = $('#polsbyPopper').val();
@@ -76,9 +87,10 @@ $('#configSubmit').click(function(event) {
         data: JSON.stringify({
             stateID: stateID,
             goalDistricts: goalDistricts,
-            minorityMajority: minorityMajority,
+            majorityMinorityMinPercentage: majorityMinorityMin,
+            majorityMinorityMaxPercentage: majorityMinorityMax,
             targetDemo: targetDemo,
-            numGoalDistricts: numGoalDistricts,
+            goalMajorityMinorityDistricts: numGoalDistricts,
             polsbyPopper: polsbyPopper,
             edgeCut: edgeCut,
             efficencyGap: efficencyGap,
@@ -96,9 +108,14 @@ $('#configSubmit').click(function(event) {
     });
 });
 
-$('#majorityMinority').change(function(event) {
-    var value = $('#majorityMinority').val();
+$('#majorityMinorityMin').change(function(event) {
+    var value = $('#majorityMinorityMin').val();
     $('#majMinTicks').text(": " + value + " %");
+});
+
+$('#majorityMinorityMax').change(function(event) {
+    var value = $('#majorityMinorityMax').val();
+    $('#majMaxTicks').text(": " + value + " %");
 });
 
 $('#populationDeviation').change(function(event) {

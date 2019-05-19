@@ -296,16 +296,12 @@ function findMaryland() {
 		else if (map.getZoom() == 7) {
 			layerGroup.addLayer(md_districts_layer);
 		}
-		// L.geoJson(mn_precincts_geojson).addTo(map);
-					// geojson = L.geoJson(mn_precincts_geojson, {
-			// 	style: style,
-			// 	onEachFeature: onEachFeature
-			// }).addTo(map);
 	});
 }
 
 // With JQuery
-$("#majorityMinority").slider({});
+$("#majorityMinorityMin").slider({});
+$("#majorityMinorityMax").slider({});
 $("#populationDeviation").slider({});
 $("#population").slider({});
 $("#polsbyPopper").slider({});

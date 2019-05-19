@@ -112,9 +112,13 @@
                             <input class="form-control" type="number" id="numDistricts" name="districts" min="1" max="100">
                         </div>
                         
-                        <label for="compactness">Majority-Minority <span id="majMinTicks">: </span> </label>
+                        <label for="compactness">Majority-Minority Min <span id="majMinTicks">: </span> </label>
                         <div>
-                            <b>50</b> <input id="majorityMinority" type="text" class="span2" value="" data-slider-min="50" data-slider-max="100" data-slider-step="1" data-slider-value="[50,98]"/> <b>100</b>
+                            <b>.5</b> <input id="majorityMinorityMin" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value=".5" /> <b>1</b>
+                        </div>
+                        <label for="compactness">Majority-Minority Max <span id="majMaxTicks">: </span> </label>
+                        <div>
+                            <b>.5</b> <input id="majorityMinorityMax" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value=".5"/> <b>1</b>
                         </div>
                         
                         <label for="compactness">Target Demographic</label>
@@ -133,27 +137,27 @@
                         <br>
                         <label for="polsbyPopper">Polsby Popper <span id="polsbyPopperTicks">: </span> </label>
                         <div>
-                            <b>0</b> <input id="polsbyPopper" type="text" class="span2" value="" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="0"/> <b>100</b>
+                            <b>0</b> <input id="polsbyPopper" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value="0"/> <b>1</b>
                         </div>
                         <label for="compactness">Edge Cut <span id="edgeCutTicks">: </span> </label>
                         <div>
-                            <b>0</b> <input id="edgeCut" type="text" class="span2" value="" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="0"/> <b>100</b>
+                            <b>0</b> <input id="edgeCut" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value="0"/> <b>1</b>
                         </div>
 
                         <label for="politicalFairness">Political Fairness Measure</label>
                         <br>
                         <label for="efficencyGap">Efficency Gap <span id="effGapTicks">: </span> </label>
                         <div>
-                            <b>0</b> <input id="efficencyGap" type="text" class="span2" value="" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="0"/> <b>100</b>
+                            <b>0</b> <input id="efficencyGap" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value="0"/> <b>1</b>
                         </div>
                         <label for="compactness">Mean Median <span id="meanMedianTicks">: </span> </label>
                         <div>
-                            <b>0</b> <input id="meanMedian" type="text" class="span2" value="" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="0"/> <b>100</b>
+                            <b>0</b> <input id="meanMedian" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value="0"/> <b>1</b>
                         </div>
                         
                         <label for="racialCompactness">Population Deviation <span id="popDevTicks">: </span> </label>
                         <div>
-                            <b>0</b> <input id="populationDeviation" type="text" class="span2" value="" data-slider-min="0" data-slider-max="5" data-slider-step=".1" data-slider-value="0"/> <b>5</b>
+                            <b>0</b> <input id="populationDeviation" type="text" class="span2" value="" data-slider-min="0" data-slider-max=".05" data-slider-step=".001" data-slider-value="0"/> <b>5</b>
                         </div>
 
                         <button id="configSubmit" class="btn btn-secondary">Submit</button>
@@ -163,7 +167,7 @@
           </div>
         </div>
         <div id="logoutLabel">
-            <a class="btn btn-secondary" data-toggle="collapse" href="#login" role="button" aria-expanded="false" aria-controls="collapseExample">Logout</a>
+            <a class="btn btn-secondary" data-toggle="collapse" id="logout" role="button" aria-expanded="false" aria-controls="collapseExample">Logout</a>
         </div>
     </div>
 

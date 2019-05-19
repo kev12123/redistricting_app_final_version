@@ -52,9 +52,9 @@ input:focus {
 	margin: auto;
 }
 
-/* .loginvalid {
+.loginvalid {
 	display:none;
-} */
+}
 
 #logoutLabel {
 	display: none;
