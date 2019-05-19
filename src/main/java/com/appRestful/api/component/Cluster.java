@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.SimpleGraph;
+import org.locationtech.jts.geom.Geometry;
 
 import com.appRestful.api.component.data.Data;
 import com.appRestful.api.component.data.Demography;
@@ -75,6 +76,7 @@ public class Cluster extends SimpleGraph<Precinct,Edge> {
         addPrecinctDemographyData(precinct, algorithmRequestModel);
         addPrecinctElectionResults(precinct);
         updateGrownBorders(precinct);
+        updateGeometryOnAdd(precinct);
     }
 
     private void addPrecinctDemographyData(Precinct precinct, AlgorithmRequestModel algorithmRequestModel){
@@ -122,6 +124,14 @@ public class Cluster extends SimpleGraph<Precinct,Edge> {
         }
         borderPrecincts.add(newPrecinct);
     }
+    
+    private void updateGeometryOnAdd(Precinct precinct) {
+    		Geography geography = getClusterData().getGeographicData();
+    		Geography precinctGeography = precinct.getPrecinctData().getGeographicData(); 
+    		Geometry geometry = geography.getGeometry();
+    		Geometry precinctGeomtry = precinctGeography.getGeometry();
+    		geography.setGeometry(geometry.union(precinctGeomtry));
+    }
 
     public boolean removePrecinct(Precinct precinct, AlgorithmRequestModel algorithmRequestModel){
         boolean removed = this.removeVertex(precinct);
@@ -129,6 +139,7 @@ public class Cluster extends SimpleGraph<Precinct,Edge> {
             removePrecinctDemographicData(precinct, algorithmRequestModel);
             removePrecinctElectionResults(precinct);
             updateShrunkBorders(precinct);
+            updateGeometryOnRemove(precinct);
         }
         return removed;
     }
@@ -173,6 +184,14 @@ public class Cluster extends SimpleGraph<Precinct,Edge> {
             borderPrecincts.add(precinct);
         }
         borderPrecincts.remove(removedPrecinct);
+    }
+    
+    private void updateGeometryOnRemove(Precinct precinct) {
+    		Geography geography = getClusterData().getGeographicData();
+    		Geography precinctGeography = precinct.getPrecinctData().getGeographicData();
+    		Geometry geometry = geography.getGeometry();
+    		Geometry precinctGeometry = precinctGeography.getGeometry();
+    		geography.setGeometry(geometry.difference(precinctGeometry));
     }
 
     public Set<Precinct> getBorderPrecincts(){

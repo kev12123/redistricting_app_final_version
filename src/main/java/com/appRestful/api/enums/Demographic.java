@@ -1,7 +1,7 @@
 package com.appRestful.api.enums;
 
 public enum Demographic {
-    WHITE,
+    CAUCASIAN,
     BLACK,
     HISPANIC
 }

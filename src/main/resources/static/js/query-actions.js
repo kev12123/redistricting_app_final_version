@@ -13,7 +13,7 @@ $('#registerSubmit').click(function(event){
         data: JSON.stringify({
             email: email,
             username: uname,
-            password: pword
+            passWord: pword
         }),
         contentType: 'application/json',
         success: function (returnUser) {
@@ -87,10 +87,16 @@ $('#configSubmit').click(function(event) {
         data: JSON.stringify({
             stateID: stateID,
             goalDistricts: goalDistricts,
+<<<<<<< HEAD
             majorityMinorityMinPercentage: majorityMinorityMin,
             majorityMinorityMaxPercentage: majorityMinorityMax,
             targetDemo: targetDemo,
             goalMajorityMinorityDistricts: numGoalDistricts,
+=======
+            minorityMajority: minorityMajority,
+            majorityMinorityDemographic: targetDemo,
+            numGoalDistricts: numGoalDistricts,
+>>>>>>> 2b7945798ae6c7e3fefbfc4e0bb1d770281d2178
             polsbyPopper: polsbyPopper,
             edgeCut: edgeCut,
             efficencyGap: efficencyGap,
