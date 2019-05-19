@@ -13,16 +13,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.appRestful.api.entity.RoleEntity;
+import com.appRestful.api.entity.UserEntity;
+import com.appRestful.api.model.request.UserDeleteRequestModel;
 import com.appRestful.api.model.request.UserDetailsRequestModel;
 import com.appRestful.api.model.request.UserLoginRequestModel;
 import com.appRestful.api.model.response.UserRest;
 import com.appRestful.api.repository.RoleRepository;
+import com.appRestful.api.repository.UserRepository;
 import com.appRestful.api.service.UserService;
 import com.appRestful.api.shared.dto.UserDto;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
+	
+	@Autowired
+	UserRepository userRepo;
 	
 	@Autowired
 	UserService userService;
@@ -128,8 +134,20 @@ public class UserController {
 	}
 	
 	@DeleteMapping
-	public String deleteUser() {
+	public ResponseEntity deleteUser(@RequestBody UserDeleteRequestModel userDetails) {
 		
-		return "delete user";
+		UserEntity user  = null;
+		try {
+			 user = userRepo.findByUsername(userDetails.getUsername());
+			 userRepo.delete(user);
+			 
+			 return new ResponseEntity<>(HttpStatus.OK);
+		}catch(NullPointerException e) {
+			
+			System.out.println("User does not exist");
+		}
+		
+		 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		
 	}
 }

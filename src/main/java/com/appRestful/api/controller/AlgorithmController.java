@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.appRestful.api.algorithm.Algorithm;
+import com.appRestful.api.algorithm.ObjectiveFunction;
 import com.appRestful.api.component.Cluster;
 import com.appRestful.api.component.District;
 import com.appRestful.api.component.Edge;
@@ -32,6 +34,7 @@ import com.appRestful.api.component.data.Geography;
 import com.appRestful.api.component.data.Result;
 import com.appRestful.api.entity.CoordinateEntity;
 import com.appRestful.api.entity.CountyEntity;
+import com.appRestful.api.entity.NeighborEntity;
 import com.appRestful.api.entity.PopulationEntity;
 import com.appRestful.api.entity.PrecinctEntity;
 import com.appRestful.api.entity.VotingEntity;
@@ -75,6 +78,9 @@ public class AlgorithmController {
 	@Autowired
 	CoordinatesRepository coordinateRepo;
 	
+	@Autowired
+	NeighborsRepository neighborRepo;
+	
   
 	
 	@PostMapping("/runAlgorithm")
@@ -90,16 +96,24 @@ public class AlgorithmController {
 	   
 		 Map<Measure,Double>  weights = createWeights(algorithmData);
 	     
-		 int stateId = 27;
+		 int stateId = 24;
 		 State state = new State(Edge.class);
 		 List<CountyEntity> counties = countyRepo.findByCountyIdStateid(24);
+		 Map<String,Precinct> precinctIds = new HashMap<>();
 //		 Set<Long> precincts = new HashSet();
 			for(CountyEntity countyt: counties) {
 				for(PrecinctEntity pEntity: precinctRepo.findByCountyidAndStateid(countyt.getCountyId().getId() , countyt.getCountyId().getStateid())) {
 					
 					//Allocate precinct population
-					int totalPopulation = 0;
-					Map<Demographic,Long> demographics = createDemographics (pEntity.getId() , populationRepo , totalPopulation);
+					Long totalPopulation = 0L;
+					Map<Demographic,Long> demographics = new HashMap();
+					PopulationEntity popul = populationRepo.findByPrecinctid(pEntity.getId()); 
+					demographics.put(Demographic.BLACK, popul.getBlackPopulation());
+					totalPopulation+=popul.getBlackPopulation();
+					demographics.put(Demographic.CAUCASIAN, popul.getWhitePopulation());
+					totalPopulation+=popul.getWhitePopulation();
+					demographics.put(Demographic.HISPANIC, popul.getOtherPopulation());
+					totalPopulation+=popul.getOtherPopulation();
 					
 					//Allocate political party data
 					VotingEntity votes = votingRepo.findByPrecinctid(pEntity.getId());
@@ -126,6 +140,7 @@ public class AlgorithmController {
 			        
 			        //create new precint
 			        Precinct precinct = new Precinct(Long.toString(pEntity.getId()));
+			        precinctIds.put(precinct.getPrecinctID(), precinct);
 			          
 			        precinct.initializeData(data);
 					
@@ -136,14 +151,57 @@ public class AlgorithmController {
 					System.out.println("finished cluster " + count++);
 					
 					//iterate through precincts 
+					
 					//add neighbors list of neighbors 
 					
 					
 				}
 			}
 		
+	
+		for(Precinct p : precinctIds.values()) {
+			
+			List <NeighborEntity> neighbors = neighborRepo.findByNeighboridNeighborprecinctid(Long.parseLong(p.getPrecinctID()));
+			for(NeighborEntity neighbor : neighbors) {
+				
+				String neighborPrecinctId = neighbor.getNeighborPK().getNeighborprecinctid() + "";
+				Precinct pNeighbor = precinctIds.get(neighborPrecinctId);
+				
+				p.addMutualNeighbor(pNeighbor);
+				Cluster cluster = p.getParentCluster();
+				Cluster neighborCluster = pNeighbor.getParentCluster();
+				if(!(state.containsEdge(cluster,neighborCluster) || cluster.equals(neighborCluster))) {
+					
+					Edge edge = new Edge(cluster,neighborCluster,algorithmData);
+					state.addEdge(cluster, neighborCluster , edge);
+				}
+				
+				
+			}
+			
+			count++;
+			System.out.println(count);
+			
+		}
+		
+		
+		for(Precinct p : precinctIds.values()) p.initilizeBorder();
+		
+		
 		Long end = System.nanoTime();
 		System.out.println((end - start)/1000000000.);
+		
+		
+		algorithmData.setTargetPopulation(state.getTotalPopulation()/algorithmData.getGoalDistricts());
+		System.out.println("Target population" + algorithmData.getTargetPopulation());
+		
+		
+		ObjectiveFunction objectiveFunction  = new ObjectiveFunction(weights,algorithmData,state);
+		Algorithm algorithm = new Algorithm(state);
+		algorithm.initializeAlgorithm(objectiveFunction, algorithmData);
+		algorithm.run();
+		System.out.println("DONE");
+		
 		
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -178,22 +236,6 @@ public class AlgorithmController {
 		 weights.put(Measure.POPULATION_EQUALITY, algorithmData.getPopulationEquality());
 		 
 		 return weights;
-	}
-	
-	
-	public static Map<Demographic,Long> createDemographics (Long precintid , PopulationRepository populationRepo , int totalPopulation) {
-		
-		Map<Demographic,Long> demographics = new HashMap();
-		PopulationEntity popul = populationRepo.findByPrecinctid(precintid); 
-		demographics.put(Demographic.BLACK, popul.getBlackPopulation());
-		totalPopulation+=popul.getBlackPopulation();
-		demographics.put(Demographic.CAUCASIAN, popul.getWhitePopulation());
-		totalPopulation+=popul.getWhitePopulation();
-		demographics.put(Demographic.HISPANIC, popul.getOtherPopulation());
-		totalPopulation+=popul.getOtherPopulation();
-		
-		return demographics;
-		
 	}
 	
 	
