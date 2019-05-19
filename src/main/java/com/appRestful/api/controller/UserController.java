@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.appRestful.api.entity.RoleEntity;
 import com.appRestful.api.model.request.UserDetailsRequestModel;
 import com.appRestful.api.model.request.UserLoginRequestModel;
 import com.appRestful.api.model.response.UserRest;
+import com.appRestful.api.repository.RoleRepository;
 import com.appRestful.api.service.UserService;
 import com.appRestful.api.shared.dto.UserDto;
 
@@ -24,6 +26,9 @@ public class UserController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	RoleRepository roleRepo;
 	
 	@GetMapping
 	public String getUser(){  
@@ -86,8 +91,18 @@ public class UserController {
 				System.out.println("User exists");
 				System.out.println(foundUser.getUsername() + " " + foundUser.getEmail() + " " + foundUser.getPassword());
 				
+				//get user role 
 				UserRest returnUser = new UserRest();
+				RoleEntity userRole = roleRepo.findByRoleidUsername(foundUser.getUsername());
+				if(userRole!=null) {
+					
+					returnUser.setRole("admin");
+				}else {
+					
+					returnUser.setRole("none");
+				}
 				BeanUtils.copyProperties(foundUser, returnUser);
+				
 				
 				return ResponseEntity.ok(returnUser);
 			}

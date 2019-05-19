@@ -43,6 +43,7 @@ import com.appRestful.api.model.request.PopulationRequestModel;
 import com.appRestful.api.model.response.PopulationResp;
 import com.appRestful.api.repository.CoordinatesRepository;
 import com.appRestful.api.repository.CountyRepository;
+import com.appRestful.api.repository.NeighborsRepository;
 import com.appRestful.api.repository.PopulationRepository;
 import com.appRestful.api.repository.PrecinctRepository;
 import com.appRestful.api.repository.VotingRepository;
@@ -73,6 +74,8 @@ public class AlgorithmController {
 	
 	@Autowired
 	CoordinatesRepository coordinateRepo;
+	
+  
 	
 	@PostMapping("/runAlgorithm")
 	public ResponseEntity runAlgorithm(@RequestBody AlgorithmRequestModel algorithmData) {
@@ -123,7 +126,7 @@ public class AlgorithmController {
 			        
 			        //create new precint
 			        Precinct precinct = new Precinct(Long.toString(pEntity.getId()));
-			        
+			          
 			        precinct.initializeData(data);
 					
 			        //Create cluster
@@ -132,6 +135,8 @@ public class AlgorithmController {
 					clusters.put(cluster.getPrimaryId(), cluster);
 					System.out.println("finished cluster " + count++);
 					
+					//iterate through precincts 
+					//add neighbors list of neighbors 
 					
 					
 				}
