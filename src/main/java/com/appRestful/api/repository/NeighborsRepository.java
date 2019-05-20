@@ -10,5 +10,6 @@ import com.appRestful.api.entity.UserEntity;
 public interface NeighborsRepository extends CrudRepository<NeighborEntity,Long> {
 	
 	List<NeighborEntity> findByNeighboridNeighborprecinctid(Long precinctid);
+	List<NeighborEntity> findByNeighboridPrecinctid(Long precinctid);
 
 }

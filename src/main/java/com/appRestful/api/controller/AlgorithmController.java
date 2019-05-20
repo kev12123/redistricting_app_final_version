@@ -43,6 +43,8 @@ import com.appRestful.api.enums.Measure;
 import com.appRestful.api.enums.PoliticalParty;
 import com.appRestful.api.model.request.AlgorithmRequestModel;
 import com.appRestful.api.model.request.PopulationRequestModel;
+import com.appRestful.api.model.request.RequestQueue;
+import com.appRestful.api.model.response.DataResponse;
 import com.appRestful.api.model.response.PopulationResp;
 import com.appRestful.api.repository.CoordinatesRepository;
 import com.appRestful.api.repository.CountyRepository;
@@ -55,6 +57,7 @@ import com.appRestful.api.service.StateService;
 import com.appRestful.api.service.UserService;
 import com.appRestful.api.shared.dto.CountyDto;
 import com.appRestful.api.shared.dto.StateDto;
+import com.appRestful.api.utility.Utility;
 
 @RestController
 @RequestMapping("/map")
@@ -161,10 +164,10 @@ public class AlgorithmController {
 	
 		for(Precinct p : precinctIds.values()) {
 			
-			List <NeighborEntity> neighbors = neighborRepo.findByNeighboridNeighborprecinctid(Long.parseLong(p.getPrecinctID()));
+			List <NeighborEntity> neighbors = neighborRepo.findByNeighboridPrecinctid(Long.parseLong(p.getPrecinctID()));
 			for(NeighborEntity neighbor : neighbors) {
 				
-				String neighborPrecinctId = neighbor.getNeighborPK().getPrecinctid() + "";
+				String neighborPrecinctId = neighbor.getNeighborPK().getNeighborprecinctid() + "";
 				Precinct pNeighbor = precinctIds.get(neighborPrecinctId);
 				
 				p.addMutualNeighbor(pNeighbor);
@@ -178,14 +181,14 @@ public class AlgorithmController {
 				
 				
 			}
-			
 			count++;
 			System.out.println(count);
 			
 		}
 		
 		
-		for(Precinct p : precinctIds.values()) p.initilizeBorder();
+		for(Precinct p : precinctIds.values()) 
+			p.initilizeBorder();
 		
 		
 		Long end = System.nanoTime();
@@ -193,6 +196,7 @@ public class AlgorithmController {
 		
 		
 		algorithmData.setTargetPopulation(state.getTotalPopulation()/algorithmData.getGoalDistricts());
+		algorithmData.setIterationQuantity(Utility.iterationQuantity);
 		System.out.println("Target population" + algorithmData.getTargetPopulation());
 		
 		
@@ -201,6 +205,10 @@ public class AlgorithmController {
 		algorithm.initializeAlgorithm(objectiveFunction, algorithmData);
 		algorithm.run();
 		System.out.println("DONE");
+		for(DataResponse response : RequestQueue.requestQueue) {
+			System.out.println(response);
+		}
+		
 		
 		
 		return new ResponseEntity<>(HttpStatus.OK);
@@ -220,6 +228,24 @@ public class AlgorithmController {
 		returnPopul.setPacificIslanderPopulation(popul.getPacificIslanderPopulation());
 		
 		return ResponseEntity.ok(returnPopul);
+	}
+	
+	
+	@GetMapping("/getData")
+	public ResponseEntity getIncrementalData() {
+		
+		if(!RequestQueue.requestQueue.isEmpty()){
+			
+	
+	
+			return ResponseEntity.ok(RequestQueue.requestQueue.remove(0));
+		
+		}
+		else {
+			
+			return ResponseEntity.badRequest().build();
+		}
+		
 	}
 	
 	

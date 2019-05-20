@@ -42,7 +42,8 @@ public class Utility {
    //for phase two increment
     public static int initialIteration = 0;
     public static int nextIteration = 1;
-    public static int skipIterations = 75;
+    public static int skipIterations = 10;
+    public static int iterationQuantity = 1000;
 
     //For Border Comparisons
     public static boolean isOnBorder = true;
@@ -51,5 +52,9 @@ public class Utility {
     public static int borderExpand = 1;
     public static int borderContract = -1;
     public static int enclosed = 0;
+    
+    //For phase response
+    public static String phaseOneResponse = "PHASE_ONE";
+    public static String phaseTwoResponse = "PHASE_TWO";
 }
 

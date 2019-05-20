@@ -11,6 +11,8 @@ import com.appRestful.api.algorithm.RunStatistics;
 import com.appRestful.api.enums.Demographic;
 import com.appRestful.api.enums.PrecinctSelection;
 import com.appRestful.api.model.request.AlgorithmRequestModel;
+import com.appRestful.api.model.request.RequestQueue;
+import com.appRestful.api.model.response.DataResponse;
 import com.appRestful.api.utility.JoinabilityComparator;
 import com.appRestful.api.utility.PopulationComparator;
 import com.appRestful.api.utility.Utility;
@@ -96,8 +98,22 @@ public class State extends SimpleGraph<Cluster,Edge> {
     public void joinCandidatePairs(AlgorithmRequestModel algorithmRequestModel){
         for (Cluster[] candidatePair : candidatePairs){
             mergeClusters(candidatePair[Utility.source],candidatePair[Utility.destination], algorithmRequestModel);
+            RequestQueue.requestQueue.add(createPhaseOneResponse(candidatePair[Utility.destination]));
             if(algorithmRequestModel.getGoalDistricts() == getClustersQuantity()) return;
         }
+    }
+    
+    
+    private DataResponse createPhaseOneResponse(Cluster cluster){
+    	List<String> data = new ArrayList();
+    	data.add(cluster.getPrimaryId());
+    	for(Precinct precinct : cluster.getPrecincts()) {
+    		data.add(precinct.getPrecinctID());
+    	}
+    	DataResponse dataResponse = new DataResponse();
+    	dataResponse.setDistrictData(data);
+    	dataResponse.setStage(Utility.phaseOneResponse);
+    	return dataResponse;
     }
 
     public void removeCluster(Cluster cluster){

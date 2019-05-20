@@ -141,7 +141,8 @@ public class UserController {
 			 user = userRepo.findByUsername(userDetails.getUsername());
 			 userRepo.delete(user);
 			 
-			 return new ResponseEntity<>(HttpStatus.OK);
+			 return new
+					 ResponseEntity<>(HttpStatus.OK);
 		}catch(NullPointerException e) {
 			
 			System.out.println("User does not exist");

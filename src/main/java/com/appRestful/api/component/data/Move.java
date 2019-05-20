@@ -1,9 +1,14 @@
 package com.appRestful.api.component.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.appRestful.api.algorithm.ObjectiveFunction;
 import com.appRestful.api.component.District;
 import com.appRestful.api.component.Precinct;
 import com.appRestful.api.model.request.AlgorithmRequestModel;
+import com.appRestful.api.model.request.RequestQueue;
+import com.appRestful.api.model.response.DataResponse;
 import com.appRestful.api.utility.Utility;
 
 public class Move {
@@ -37,9 +42,22 @@ public class Move {
         boolean isMoveValid = isMoveValid(calculateChange());
         if(!isMoveValid)
             undoMove();
+        else
+        	RequestQueue.requestQueue.add(createDataResponse());
         return isMoveValid;
     }
-
+    
+    private DataResponse createDataResponse(){
+    	List<String> info = new ArrayList();
+    	info.add(fromDistrict.getPrimaryId());
+    	info.add(toDistrict.getPrimaryId());
+    	info.add(precinct.getPrecinctID());
+    	DataResponse resp = new DataResponse();
+    	resp.setDistrictData(info);
+    	resp.setStage(Utility.phaseTwoResponse);
+    	return resp;
+    }
+    
     private double calculateChange(){
         double oldValue = objectiveFunction.getTotalValue();
         objectiveFunction.updateAllMeasures(fromDistrict.getClusterData());

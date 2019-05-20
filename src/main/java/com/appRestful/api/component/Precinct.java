@@ -46,7 +46,7 @@ public class Precinct {
 
     //has imutable border once initialized.
     public void initilizeBorder(){
-        borderDegree = allNeighbors.size();
+        borderDegree = allNeighbors.size() - 1;
         isOnBorder = borderDegree > Utility.enclosed;
         isBorderInitialized = Utility.borderInitialized;
     }
@@ -131,7 +131,7 @@ public class Precinct {
     public Set<Precinct> getAllNeighborsInParentCluster(){
         Set<Precinct> neighborsInCluster = new HashSet<>();
         for(Precinct neighbor : this.getAllNeighbors()){
-            if(parentCluster.containsVertex(neighbor)) {
+            if( this != neighbor && this.parentCluster.getPrimaryId() == neighbor.getParentCluster().getPrimaryId()) {
                 neighborsInCluster.add(neighbor);
             }
         }

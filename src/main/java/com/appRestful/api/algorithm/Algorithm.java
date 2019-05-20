@@ -69,7 +69,7 @@ public class Algorithm {
             iteration += (runPhaseTwoStep()) ? Utility.nextIteration : Utility.skipIterations;
             System.out.println("ITERATION: " + iteration);
         }
-    }
+     }
 
     private boolean runPhaseTwoStep() {
         Move move = getMove();
