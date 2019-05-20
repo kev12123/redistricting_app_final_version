@@ -143,6 +143,7 @@ public class UserController {
 			 
 			 return new
 					 ResponseEntity<>(HttpStatus.OK);
+
 		}catch(NullPointerException e) {
 			
 			System.out.println("User does not exist");

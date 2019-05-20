@@ -25,7 +25,7 @@ function getRandomColor() {
 
 // get color depending on population density value
 function getColor(features) {
-	console.log(features);
+	// console.log(features.properties.GEO_ID);
 	return getRandomColor();
 }
 
@@ -219,7 +219,6 @@ function showMNPrecinctInfo(feature, layer) {
 function showMDPrecinctInfo(feature, layer) {
 	layer.on('mouseover', function(e) {
 		console.log(feature.properties);
-
 
 		var popup = L.popup()
    	.setLatLng(e.latlng) 
