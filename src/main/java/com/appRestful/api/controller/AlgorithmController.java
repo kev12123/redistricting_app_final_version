@@ -164,7 +164,7 @@ public class AlgorithmController {
 			List <NeighborEntity> neighbors = neighborRepo.findByNeighboridNeighborprecinctid(Long.parseLong(p.getPrecinctID()));
 			for(NeighborEntity neighbor : neighbors) {
 				
-				String neighborPrecinctId = neighbor.getNeighborPK().getNeighborprecinctid() + "";
+				String neighborPrecinctId = neighbor.getNeighborPK().getPrecinctid() + "";
 				Precinct pNeighbor = precinctIds.get(neighborPrecinctId);
 				
 				p.addMutualNeighbor(pNeighbor);
