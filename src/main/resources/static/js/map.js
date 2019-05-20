@@ -24,7 +24,8 @@ function getRandomColor() {
 }
 
 // get color depending on population density value
-function getColor() {
+function getColor(features) {
+	console.log(features);
 	return getRandomColor();
 }
 
@@ -35,7 +36,7 @@ function style(features) {
 		color: 'white',
 		dashArray: '3',
 		fillOpacity: 0.7,
-		fillColor: getColor()
+		fillColor: getColor(features)
 		// fillColor: getColor(features.properties.GEO_ID)
 	};
 }

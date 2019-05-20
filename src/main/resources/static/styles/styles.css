@@ -83,3 +83,18 @@ b {
 	margin-left:10px;
 }
 
+#deleteLabel {
+	display: none;
+}
+
+#deleteSuccess {
+	display: none;
+	color: green;
+	margin-top: 12px;
+}
+
+#deleteError {
+	display: none;
+	color: red;
+	margin-top: 12px;
+}
