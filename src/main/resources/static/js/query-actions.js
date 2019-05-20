@@ -56,6 +56,7 @@ $('#loginSubmit').click(function(event){
             }
             else {
                 console.log("Admin User");
+                $('.loginvalid').css('display','block');
                 $('#userDisplay').text("Welcome, " + returnUser.username);
                 $('#registerAnchor').text("Create User");
                 $('#register').css('display','');
