@@ -184,6 +184,7 @@ $('#configSubmit').click(function(event) {
         success: poll(),
         error: function() {
             console.log("Error");
+            return;
         }
     });
 });
@@ -207,7 +208,7 @@ function poll(){
              layerGroup.addLayer(mn_precincts_layer_colored);
 		        
 		      }, dataType: "json" , complete: poll });
-	},30000);
+	},3000);
 	
 }
 

@@ -106,18 +106,20 @@ public class AlgorithmController {
 		 List<CountyEntity> counties = countyRepo.findByCountyIdStateid(27);
 		 List<PrecinctEntity> precincts = new ArrayList();
 		 List<List<String>> data  = new ArrayList();
-		 
+		 Set UniquePrecincts = new HashSet();
 		 for(CountyEntity countyt : counties) {
 				for(PrecinctEntity pEntity: precinctRepo.findByCountyidAndStateid(countyt.getCountyId().getId() , countyt.getCountyId().getStateid())) 
 				{
 					precincts.add(pEntity);
+					
 				}
 				
 				
 		 }
 		 
 		 int numOfDistricts =4;
-		 int precinctsInDistrict = (precincts.size() /4)-500;
+		 int precinctsInDistrict = (precincts.size() /4);
+		 
 		 System.out.println(precinctsInDistrict + "rr");
 		 System.out.println(precincts.size() + "rr");
 		 
@@ -131,6 +133,8 @@ public class AlgorithmController {
 					 break;
 				 
 				 precinctsToColor.add(Long.toString(precincts.get(j).getId()));
+				 UniquePrecincts.add(precincts.get(j).getId());
+			
 				 districtCount++;
 				 
 			 }
@@ -140,6 +144,8 @@ public class AlgorithmController {
 			 RequestQueue.requestQueue.add(resp);
 			 
 		 }
+		 
+		 System.out.print(UniquePrecincts.size());
 	
 //		 Map<String,Precinct> precinctIds = new HashMap<>();
 ////		 Set<Long> precincts = new HashSet();
