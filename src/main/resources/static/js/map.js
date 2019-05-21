@@ -219,10 +219,16 @@ function showMNPrecinctInfo(feature, layer) {
 function showMDPrecinctInfo(feature, layer) {
 	layer.on('mouseover', function(e) {
 		console.log(feature.properties);
+		var totalPopulation = parseInt(feature.properties.republican_vote) + parseInt(feature.properties.democratic_vote) + parseInt(feature.properties.other_vote);
+		var demographics = "Black: " + feature.properties.black_pop
+										 + "<br>Caucasian: " + feature.properties.white_pop
+										 + "<br>Asian: " + feature.properties.asian_pop
+										 + "<br>Other: " + feature.properties.other_race_pop
+										 + "<br>Total Population: " + totalPopulation;
 
 		var popup = L.popup()
    	.setLatLng(e.latlng) 
-   	.setContent(feature.properties.black_pop)
+   	.setContent(demographics)
   	.openOn(map);
 	});
 }
@@ -230,11 +236,16 @@ function showMDPrecinctInfo(feature, layer) {
 function showFLPrecinctInfo(feature, layer) {
 	layer.on('mouseover', function(e) {
 		console.log(feature.properties);
-
+		var totalPopulation = parseInt(feature.properties.republican_vote) + parseInt(feature.properties.democratic_vote) + parseInt(feature.properties.other_vote);
+		var demographics = "Black: " + feature.properties.black_pop
+										 + "<br>Caucasian: " + feature.properties.white_pop
+										 + "<br>Asian: " + feature.properties.asian_pop
+										 + "<br>Other: " + feature.properties.other_race_pop
+										 + "<br>Total Population: " + totalPopulation;
 
 		var popup = L.popup()
    	.setLatLng(e.latlng) 
-   	.setContent(feature.properties.black_pop)
+   	.setContent(demographics)
   	.openOn(map);
 	});
 }

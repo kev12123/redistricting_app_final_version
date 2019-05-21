@@ -99,9 +99,10 @@ public class AlgorithmController {
 	   
 		 Map<Measure,Double>  weights = createWeights(algorithmData);
 	     
-		 int stateId = 24;
+		 int stateId = algorithmData.getStateid();
+		 System.out.println("The State ID: "+ stateId);
 		 State state = new State(Edge.class);
-		 List<CountyEntity> counties = countyRepo.findByCountyIdStateid(24);
+		 List<CountyEntity> counties = countyRepo.findByCountyIdStateid(stateId);
 		 Map<String,Precinct> precinctIds = new HashMap<>();
 //		 Set<Long> precincts = new HashSet();
 			for(CountyEntity countyt: counties) {
@@ -205,9 +206,7 @@ public class AlgorithmController {
 		algorithm.initializeAlgorithm(objectiveFunction, algorithmData);
 		algorithm.run();
 		System.out.println("DONE");
-		for(DataResponse response : RequestQueue.requestQueue) {
-			System.out.println(response);
-		}
+		System.out.println(algorithm.getNewState());
 		
 		
 		

@@ -43,6 +43,9 @@ public class Algorithm {
         assertInitialization();
         status = AlgorithmStatus.RUNNING;
         runPhaseOne();
+        for(Cluster cluster : newState.getClusters()) {
+        	System.out.println(cluster);
+        }
         runPhaseTwo();
         status = AlgorithmStatus.COMPLETED;
     }
