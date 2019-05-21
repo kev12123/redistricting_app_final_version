@@ -181,52 +181,35 @@ $('#configSubmit').click(function(event) {
             population: population
         }),
         contentType: 'application/json',
-        success: function (returnValue) {
-            console.log("Returned from algorithm");
-            $('#loading').css('display','none');
-            console.log(returnValue);
-            // layerGroup.removeLayer(mn_precincts_layer);
-            // var mn_precincts_layer_colored = new L.GeoJSON(mn_precincts_geojson, {
-            //     style: colorStyle
-            // });
-            // layerGroup.addLayer(mn_precincts_layer_colored);
-            // console.log(returnValue);
-            // while(fetchData){
-            for (var i = 0; i < 5000; i++) {
-                (function (i) {
-                    $.ajax({
-                        type: 'GET',
-                        url: '/map/getData',
-                        contentType: 'application/json',
-                        success: function (prescinctsToColor) {
-                            console.log("In GET request");
-                            console.log(prescinctsToColor);
-
-                            // console.log(getAColor("1500000US270879401003"));
-
-                            layerGroup.removeLayer(mn_precincts_layer);
-                            // Update color table
-                            updateColorTable(prescinctsToColor.districtData);
-                            var mn_precincts_layer_colored = new L.GeoJSON(mn_precincts_geojson, {
-                                style: colorStyle
-                            });
-                            layerGroup.addLayer(mn_precincts_layer_colored);
-                        },
-                        error: function() {
-                            fetchData = false;
-                        }
-                    })
-                })(i);
-            }
-            // setTimeout(function() { 
-                
-            // }, 3000);
-        },
+        success: poll(),
         error: function() {
             console.log("Error");
         }
     });
 });
+
+
+function poll(){
+	setTimeout(function(){
+		  $.ajax({ url: "map/getData", success: function(data){
+		        //Update your dashboard gauge
+		     console.log("In GET request");
+             console.log(data);
+
+             // console.log(getAColor("1500000US270879401003"));
+             layerGroup.removeLayer(mn_precincts_layer);
+             // Update color table
+             updateColorTable(data.districtData);
+             
+             var mn_precincts_layer_colored = new L.GeoJSON(mn_precincts_geojson, {
+                 style: colorStyle
+             });
+             layerGroup.addLayer(mn_precincts_layer_colored);
+		        
+		      }, dataType: "json" , complete: poll });
+	},30000);
+	
+}
 
 var thePrecincts = ["270879401003", "270879401003", "270879401001"];
 $('#test').click(function(event) {
@@ -253,11 +236,11 @@ function updateColorTable(prescinctsToColor) {
         geoIDMap.set(prescinctsToColor[0], d);
         geoList.push(prescinctsToColor[0]);
         // chose a color for the district
-        colorMap.set(prescinctsToColor[0], getRandomColor());
+        colorMap.set(prescinctsToColor[0], "#000");
     }
 
     for (var i = 1; i < prescinctsToColor.length; i++){
-        checkAndRemoveFromOtherDistrict(prescinctsToColor[i])
+        //checkAndRemoveFromOtherDistrict(prescinctsToColor[i])
 
         //add prescicnt to District
         geoIDMap.get(prescinctsToColor[0]).add(prescinctsToColor[i]);

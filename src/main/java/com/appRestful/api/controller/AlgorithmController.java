@@ -1,5 +1,6 @@
 package com.appRestful.api.controller;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -102,111 +103,148 @@ public class AlgorithmController {
 		 int stateId = algorithmData.getStateid();
 		 System.out.println("The State ID: "+ stateId);
 		 State state = new State(Edge.class);
-		 List<CountyEntity> counties = countyRepo.findByCountyIdStateid(stateId);
-		 Map<String,Precinct> precinctIds = new HashMap<>();
-//		 Set<Long> precincts = new HashSet();
-			for(CountyEntity countyt: counties) {
-				for(PrecinctEntity pEntity: precinctRepo.findByCountyidAndStateid(countyt.getCountyId().getId() , countyt.getCountyId().getStateid())) {
-					
-					//Allocate precinct population
-					Long totalPopulation = 0L;
-					Map<Demographic,Long> demographics = new HashMap();
-					PopulationEntity popul = populationRepo.findByPrecinctid(pEntity.getId()); 
-					demographics.put(Demographic.BLACK, popul.getBlackPopulation());
-					totalPopulation+=popul.getBlackPopulation();
-					demographics.put(Demographic.CAUCASIAN, popul.getWhitePopulation());
-					totalPopulation+=popul.getWhitePopulation();
-					demographics.put(Demographic.HISPANIC, popul.getOtherPopulation());
-					totalPopulation+=popul.getOtherPopulation();
-					
-					//Allocate political party data
-					VotingEntity votes = votingRepo.findByPrecinctid(pEntity.getId());
-					Map<PoliticalParty,Long> parties = createElectionData(votes , pEntity.getId());
-					
-					//Create demography object
-					Demography demography = new Demography(totalPopulation,demographics,parties,algorithmData);
-					
-					//Create Result object
-					Result result = new Result(2006,(votes != null) ? votes.getDemocraticVote() : 0,(votes != null) ? votes.getRepublicanVote() : 0);
-					
-					Collection<Result> results = new ArrayList<Result>();
-					results.add(result);
-					
-					//create election results object
-					ElectionResults electionResults = new ElectionResults(results);
-				
-					List<Coordinate> coordinatesData =  createPrecinctCoordinates(coordinateRepo ,pEntity.getId());
-					
-					
-			        Geography geography = new Geography(countyt.getName() ,coordinatesData);
-			        
-			        Data data = new Data(demography,electionResults,geography);
-			        
-			        //create new precint
-			        Precinct precinct = new Precinct(Long.toString(pEntity.getId()));
-			        precinctIds.put(precinct.getPrecinctID(), precinct);
-			          
-			        precinct.initializeData(data);
-					
-			        //Create cluster
-			        Cluster cluster = new District(Edge.class,precinct);
-			        state.addCluster(cluster);
-					clusters.put(cluster.getPrimaryId(), cluster);
-					System.out.println("finished cluster " + count++);
-					
-					//iterate through precincts 
-					
-					//add neighbors list of neighbors 
-					
-					
+		 List<CountyEntity> counties = countyRepo.findByCountyIdStateid(27);
+		 List<PrecinctEntity> precincts = new ArrayList();
+		 List<List<String>> data  = new ArrayList();
+		 
+		 for(CountyEntity countyt : counties) {
+				for(PrecinctEntity pEntity: precinctRepo.findByCountyidAndStateid(countyt.getCountyId().getId() , countyt.getCountyId().getStateid())) 
+				{
+					precincts.add(pEntity);
 				}
-			}
-		
+				
+				
+		 }
+		 
+		 int numOfDistricts =4;
+		 int precinctsInDistrict = (precincts.size() /4)-500;
+		 System.out.println(precinctsInDistrict + "rr");
+		 System.out.println(precincts.size() + "rr");
+		 
+		 int j = 0;
+		 for(int i = 1 ; i <= 4 ; i++) {
+			 int districtCount = 0;
+			 ArrayList<String> precinctsToColor = new ArrayList<String>();
+			 System.out.println(i);
+			 for(  ; j < precincts.size() ; j++) {
+				 if(districtCount == precinctsInDistrict)
+					 break;
+				 
+				 precinctsToColor.add(Long.toString(precincts.get(j).getId()));
+				 districtCount++;
+				 
+			 }
+			 DataResponse resp = new DataResponse();
+			 resp.setDistrictData(precinctsToColor);
+			 resp.setStage("DUMMY PHASE");
+			 RequestQueue.requestQueue.add(resp);
+			 
+		 }
 	
-		for(Precinct p : precinctIds.values()) {
-			
-			List <NeighborEntity> neighbors = neighborRepo.findByNeighboridPrecinctid(Long.parseLong(p.getPrecinctID()));
-			for(NeighborEntity neighbor : neighbors) {
-				
-				String neighborPrecinctId = neighbor.getNeighborPK().getNeighborprecinctid() + "";
-				Precinct pNeighbor = precinctIds.get(neighborPrecinctId);
-				
-				p.addMutualNeighbor(pNeighbor);
-				Cluster cluster = p.getParentCluster();
-				Cluster neighborCluster = pNeighbor.getParentCluster();
-				if(!(state.containsEdge(cluster,neighborCluster) || cluster.equals(neighborCluster))) {
-					
-					Edge edge = new Edge(cluster,neighborCluster,algorithmData);
-					state.addEdge(cluster, neighborCluster , edge);
-				}
-				
-				
-			}
-			count++;
-			System.out.println(count);
-			
-		}
-		
-		
-		for(Precinct p : precinctIds.values()) 
-			p.initilizeBorder();
-		
-		
-		Long end = System.nanoTime();
-		System.out.println((end - start)/1000000000.);
-		
-		
-		algorithmData.setTargetPopulation(state.getTotalPopulation()/algorithmData.getGoalDistricts());
-		algorithmData.setIterationQuantity(Utility.iterationQuantity);
-		System.out.println("Target population" + algorithmData.getTargetPopulation());
-		
-		
-		ObjectiveFunction objectiveFunction  = new ObjectiveFunction(weights,algorithmData,state);
-		Algorithm algorithm = new Algorithm(state);
-		algorithm.initializeAlgorithm(objectiveFunction, algorithmData);
-		algorithm.run();
-		System.out.println("DONE");
-		System.out.println(algorithm.getNewState());
+//		 Map<String,Precinct> precinctIds = new HashMap<>();
+////		 Set<Long> precincts = new HashSet();
+//			for(CountyEntity countyt: counties) {
+//				for(PrecinctEntity pEntity: precinctRepo.findByCountyidAndStateid(countyt.getCountyId().getId() , countyt.getCountyId().getStateid())) {
+//					
+//					//Allocate precinct population
+//					Long totalPopulation = 0L;
+//					Map<Demographic,Long> demographics = new HashMap();
+//					PopulationEntity popul = populationRepo.findByPrecinctid(pEntity.getId()); 
+//					demographics.put(Demographic.BLACK, popul.getBlackPopulation());
+//					totalPopulation+=popul.getBlackPopulation();
+//					demographics.put(Demographic.CAUCASIAN, popul.getWhitePopulation());
+//					totalPopulation+=popul.getWhitePopulation();
+//					demographics.put(Demographic.HISPANIC, popul.getOtherPopulation());
+//					totalPopulation+=popul.getOtherPopulation();
+//					
+//					//Allocate political party data
+//					VotingEntity votes = votingRepo.findByPrecinctid(pEntity.getId());
+//					Map<PoliticalParty,Long> parties = createElectionData(votes , pEntity.getId());
+//					
+//					//Create demography object
+//					Demography demography = new Demography(totalPopulation,demographics,parties,algorithmData);
+//					
+//					//Create Result object
+//					Result result = new Result(2006,(votes != null) ? votes.getDemocraticVote() : 0,(votes != null) ? votes.getRepublicanVote() : 0);
+//					
+//					Collection<Result> results = new ArrayList<Result>();
+//					results.add(result);
+//					
+//					//create election results object
+//					ElectionResults electionResults = new ElectionResults(results);
+//				
+//					List<Coordinate> coordinatesData =  createPrecinctCoordinates(coordinateRepo ,pEntity.getId());
+//					
+//					
+//			        Geography geography = new Geography(countyt.getName() ,coordinatesData);
+//			        
+//			        Data data = new Data(demography,electionResults,geography);
+//			        
+//			        //create new precint
+//			        Precinct precinct = new Precinct(Long.toString(pEntity.getId()));
+//			        precinctIds.put(precinct.getPrecinctID(), precinct);
+//			          
+//			        precinct.initializeData(data);
+//					
+//			        //Create cluster
+//			        Cluster cluster = new District(Edge.class,precinct);
+//			        state.addCluster(cluster);
+//					clusters.put(cluster.getPrimaryId(), cluster);
+//					System.out.println("finished cluster " + count++);
+//					
+//					//iterate through precincts 
+//					
+//					//add neighbors list of neighbors 
+//					
+//					
+//				}
+//			}
+//		
+//	
+//		for(Precinct p : precinctIds.values()) {
+//			
+//			List <NeighborEntity> neighbors = neighborRepo.findByNeighboridPrecinctid(Long.parseLong(p.getPrecinctID()));
+//			for(NeighborEntity neighbor : neighbors) {
+//				
+//				String neighborPrecinctId = neighbor.getNeighborPK().getNeighborprecinctid() + "";
+//				Precinct pNeighbor = precinctIds.get(neighborPrecinctId);
+//				
+//				p.addMutualNeighbor(pNeighbor);
+//				Cluster cluster = p.getParentCluster();
+//				Cluster neighborCluster = pNeighbor.getParentCluster();
+//				if(!(state.containsEdge(cluster,neighborCluster) || cluster.equals(neighborCluster))) {
+//					
+//					Edge edge = new Edge(cluster,neighborCluster,algorithmData);
+//					state.addEdge(cluster, neighborCluster , edge);
+//				}
+//				
+//				
+//			}
+//			count++;
+//			System.out.println(count);
+//			
+//		}
+//		
+//		
+//		for(Precinct p : precinctIds.values()) 
+//			p.initilizeBorder();
+//		
+//		
+//		Long end = System.nanoTime();
+//		System.out.println((end - start)/1000000000.);
+//		
+//		
+//		algorithmData.setTargetPopulation(state.getTotalPopulation()/algorithmData.getGoalDistricts());
+//		algorithmData.setIterationQuantity(Utility.iterationQuantity);
+//		System.out.println("Target population" + algorithmData.getTargetPopulation());
+//		
+//		
+//		ObjectiveFunction objectiveFunction  = new ObjectiveFunction(weights,algorithmData,state);
+//		Algorithm algorithm = new Algorithm(state);
+//		algorithm.initializeAlgorithm(objectiveFunction, algorithmData);
+//		algorithm.run();
+//		System.out.println("DONE");
+//		System.out.println(algorithm.getNewState());
 		
 		
 		
