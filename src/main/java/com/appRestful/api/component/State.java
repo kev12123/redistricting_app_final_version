@@ -98,7 +98,7 @@ public class State extends SimpleGraph<Cluster,Edge> {
     public void joinCandidatePairs(AlgorithmRequestModel algorithmRequestModel){
         for (Cluster[] candidatePair : candidatePairs){
             mergeClusters(candidatePair[Utility.source],candidatePair[Utility.destination], algorithmRequestModel);
-            RequestQueue.requestQueue.add(createPhaseOneResponse(candidatePair[Utility.destination]));
+            //RequestQueue.requestQueue.add(createPhaseOneResponse(candidatePair[Utility.destination]));
             if(algorithmRequestModel.getGoalDistricts() == getClustersQuantity()) return;
         }
     }

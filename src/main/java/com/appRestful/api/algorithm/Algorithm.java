@@ -12,6 +12,8 @@ import com.appRestful.api.component.State;
 import com.appRestful.api.component.data.Move;
 import com.appRestful.api.enums.AlgorithmStatus;
 import com.appRestful.api.model.request.AlgorithmRequestModel;
+import com.appRestful.api.model.request.RequestQueue;
+import com.appRestful.api.model.response.DataResponse;
 import com.appRestful.api.utility.Utility;
 
 //TODO: Finish writing algorithm class
@@ -44,10 +46,61 @@ public class Algorithm {
         status = AlgorithmStatus.RUNNING;
         runPhaseOne();
         for(Cluster cluster : newState.getClusters()) {
-        	System.out.println(cluster);
+            System.out.println("CLUSTER " + cluster.getPrimaryId());
+            System.out.println("Precints being inserted" + cluster.getPrecincts().size());
+            ArrayList<String> precintsData =  new ArrayList<>();
+            precintsData.add(cluster.getPrimaryId());
+            for(Precinct precinct : cluster.getPrecincts()){
+                System.out.println("\t" + "PRECINCT " + precinct.getPrecinctID());
+                precintsData.add(precinct.getPrecinctID());
+            }
+            DataResponse dataResponse =  new DataResponse();
+            dataResponse.setDistrictData(precintsData);
+            dataResponse.setStage(Utility.phaseOneResponse);
+//            String toSend = "";
+//            for (String s :dataResponse.getDistrictData()){
+//                toSend += "#" + s;
+//            }
+            //dataResponse.getDistrictData().removeAll(dataResponse.getDistrictData());
+            RequestQueue.requestQueue.add(dataResponse);
         }
         runPhaseTwo();
+
+        for(Cluster cluster : newState.getClusters()) {
+            System.out.println("CLUSTER " + cluster.getPrimaryId());
+            System.out.println("Precints being inserted" + cluster.getPrecincts().size());
+            ArrayList<String> precintsData =  new ArrayList<>();
+            precintsData.add(cluster.getPrimaryId());
+            for(Precinct precinct : cluster.getPrecincts()){
+                System.out.println("\t" + "PRECINCT " + precinct.getPrecinctID());
+                precintsData.add(precinct.getPrecinctID());
+            }
+            DataResponse dataResponse =  new DataResponse();
+            dataResponse.setDistrictData(precintsData);
+            dataResponse.setStage(Utility.phaseTwoResponse);
+
+            RequestQueue.requestQueue.add(dataResponse);
+        }
+
+
+
+        DataResponse returnData = new DataResponse();
+        returnData.setStage("DONE");
+
+
         status = AlgorithmStatus.COMPLETED;
+    }
+
+    private DataResponse createDataResponse(Cluster cluster){
+        DataResponse dataResponse = new DataResponse();
+        List<String> ids = new ArrayList<>();
+        ids.add(cluster.getPrimaryId());
+        for(Precinct precinct: cluster.getPrecincts()){
+            ids.add(precinct.getPrecinctID());
+        }
+        dataResponse.setDistrictData(ids);
+        dataResponse.setStage(Utility.phaseOneResponse);
+        return dataResponse;
     }
 
     public void runPhaseOne() {

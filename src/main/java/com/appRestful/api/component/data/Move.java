@@ -42,8 +42,6 @@ public class Move {
         boolean isMoveValid = isMoveValid(calculateChange());
         if(!isMoveValid)
             undoMove();
-        else
-        	RequestQueue.requestQueue.add(createDataResponse());
         return isMoveValid;
     }
     
