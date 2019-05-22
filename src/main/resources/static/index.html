@@ -185,6 +185,120 @@
                       </div> 
               </div>
           </div>
+
+          <div>
+            <a class="btn btn-secondary" data-toggle="collapse" href="#batch" role="button" aria-expanded="false" aria-controls="collapseExample">Batch Mode </a>
+          </div>
+          <div class="collapse" id="batch">
+              <div class="card card-body">
+                    <div class="form-group">
+                      <label for="compactness">Choose Field <span id="batchFieldSelectTicks">: </span> </label>
+                        <select class="form-control" id="batchFieldSelect">
+                          <option>Majority Minortiy</option>
+                          <option>Convex Hull</option>
+                          <option>Polsby Popper</option>
+                          <option>Edge Cut</option>
+                          <option>Efficency Gap</option>
+                          <option>Mean Median</option>
+                          <option>Population Deviation</option>
+                        </select>
+
+                      <div>
+                        <b>0</b> <input id="batchFieldSelectValue" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value=".5"/> <b>1</b>
+                      </div>
+
+                      <label for="compactness">Number of Runs</label>
+                      <div>
+                          <input class="form-control" type="number" id="numRuns" name="districts" min="1" max="100">
+                      </div>
+
+                        <div class="form-group">
+                          <div id="batchNumGoalDistrictsShow">
+                            <label for="compactness">Goal Districts</label>
+                            <div>
+                                <input class="form-control" type="number" id="batchNumDistricts" name="districts" min="1" max="100">
+                            </div>
+                          </div>
+
+                          <div id="batchNumGoalDistrictsMinMaxShow">
+                            <label for="compactness">Goal Majority-Minority Districts</label>
+                            <div>
+                                <input class="form-control" type="number" id="batchNumGoalDistrictsMinMax" name="districts" min="1" max="100">
+                            </div>
+                          </div>
+                          
+                          <div id="batchMajorityMinorityMinShow">
+                            <label for="compactness">Majority-Minority Min <span id="batchMajMinTicks">: </span> </label>
+                            <div>
+                                <b>.5</b> <input id="batchMajorityMinorityMin" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value=".5" /> <b>1</b>
+                            </div>
+                          </div>
+
+                          <div id="batchMajorityMinorityMaxShow">
+                            <label for="compactness">Majority-Minority Max <span id="batchMajMaxTicks">: </span> </label>
+                            <div>
+                                <b>.5</b> <input id="batchMajorityMinorityMax" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value=".5"/> <b>1</b>
+                            </div>
+                          </div>
+
+                          <div id="batchConvexHullShow">
+                            <label for="convexHull">Convex Hull <span id="batchConvexHullTicks">: </span> </label>
+                            <div>
+                                <b>0</b> <input id="batchConvexHull" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value="0"/> <b>1</b>
+                            </div>
+                          </div>
+
+                          <label for="compactness">Target Demographic</label>
+                          <select class="form-control" id="batchtargetDemo">
+                            <option>Caucasian</option>
+                            <option>Black</option>
+                            <option>Hispanic</option>
+                          </select>
+                          
+                          <label for="compactness">Compactness Measure</label>
+                          <br>
+                          <div id="batchPolsbyPopperShow">
+                            <label for="polsbyPopper">Polsby Popper <span id="batchPolsbyPopperTicks">: </span> </label>
+                            <div>
+                                <b>0</b> <input id="batchPolsbyPopper" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value="0"/> <b>1</b>
+                            </div>
+                          </div>
+
+                          <div id="batchEdgeCutShow">
+                            <label for="compactness">Edge Cut <span id="batchEdgeCutTicks">: </span> </label>
+                            <div>
+                                <b>0</b> <input id="batchEdgeCut" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value="0"/> <b>1</b>
+                            </div>
+                          </div>
+                          
+                          <label for="politicalFairness">Political Fairness Measure</label>
+                          <br>
+                          <div id="batchEfficencyGapShow">
+                            <label for="batchEfficencyGap">Efficency Gap <span id="batchEffGapTicks">: </span> </label>
+                            <div>
+                                <b>0</b> <input id="batchEfficencyGap" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value="0"/> <b>1</b>
+                            </div>
+                          </div>
+
+                          <div id="batchMeanMedianShow">
+                            <label for="compactness">Mean Median <span id="batchMeanMedianTicks">: </span> </label>
+                            <div>
+                                <b>0</b> <input id="batchMeanMedian" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value="0"/> <b>1</b>
+                            </div>
+                          </div>
+                          
+                          <div id="batchPopulationDeviationShow">
+                            <label for="batchPopulationDeviation">Population Deviation <span id="batchPopDevTicks">: </span> </label>
+                            <div>
+                                <b>0</b> <input id="batchPopulationDeviation" type="text" class="span2" value="" data-slider-min="0" data-slider-max=".05" data-slider-step=".001" data-slider-value="0"/> <b>5</b>
+                            </div>
+                          </div>
+
+                          <button id="batchSubmit" class="btn btn-secondary">Submit</button>
+                        </div> 
+              </div>
+          </div>
+
         </div>
         <div id="logoutLabel">
             <a class="btn btn-secondary" data-toggle="collapse" id="logout" role="button" aria-expanded="false" aria-controls="collapseExample">Logout</a>
@@ -208,6 +322,7 @@
 
     <script src="js/map.js"></script>
     <script src="js/query-actions.js"></script>
+    <script src="js/batch.js"></script>
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->

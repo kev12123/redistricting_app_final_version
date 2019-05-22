@@ -122,21 +122,30 @@ layerGroup.addTo(map);
 // }
 // --------------------------------------------------------------------------------------------------------------------
 
-var mn_state_layer = new L.GeoJSON(mn_geojson);
-var md_state_layer = new L.GeoJSON(md_geojson);
-var fl_state_layer = new L.GeoJSON(fl_geojson);
+var mn_state_layer = new L.GeoJSON(mn_geojson, {
+	style: style
+});
+var md_state_layer = new L.GeoJSON(md_geojson, {
+	style: style
+});
+var fl_state_layer = new L.GeoJSON(fl_geojson, {
+	style: style
+});
 
 layerGroup.addLayer(mn_state_layer);
 layerGroup.addLayer(md_state_layer);
 layerGroup.addLayer(fl_state_layer);
 
 var mn_districts_layer = new L.GeoJSON(mn_districts_geojson, {
+	style: style,
 	onEachFeature: showMNPrecincts
 });
 var md_districts_layer = new L.GeoJSON(md_districts_geojson, {
+	style: style,
 	onEachFeature: showMDPrecincts
 });
 var fl_districts_layer = new L.GeoJSON(fl_districts_geojson, {
+	style: style,
 	onEachFeature: showFLPrecincts
 });
 
@@ -182,12 +191,38 @@ function showMNPrecincts(feature, layer) {
     layer.on({
 				click: addMNPrecinctsLayer,
 		});
+		layer.on('mouseover', function(e) {
+		console.log(feature.properties);
+		var totalPopulation = parseInt(feature.properties.whitePop) + parseInt(feature.properties.blackPop) + parseInt(feature.properties.other_race);
+		var demographics = "Black: " + feature.properties.blackPop
+										 + "<br>Caucasian: " + feature.properties.whitePop
+										 + "<br>Other: " + feature.properties.other_race
+										 + "<br>Total Population: " + totalPopulation;
+
+		var popup = L.popup()
+   	.setLatLng(e.latlng) 
+   	.setContent(demographics)
+  	.openOn(map);
+	});
 }
 
 function showMDPrecincts(feature, layer) {
 	//bind click
 	layer.on({
 			click: addMDPrecinctsLayer
+	});
+	layer.on('mouseover', function(e) {
+		console.log(feature.properties);
+		var totalPopulation = parseInt(feature.properties.whitePop) + parseInt(feature.properties.blackPop) + parseInt(feature.properties.other_race);
+		var demographics = "Black: " + feature.properties.blackPop
+										 + "<br>Caucasian: " + feature.properties.whitePop
+										 + "<br>Other: " + feature.properties.other_race
+										 + "<br>Total Population: " + totalPopulation;
+
+		var popup = L.popup()
+   	.setLatLng(e.latlng) 
+   	.setContent(demographics)
+  	.openOn(map);
 	});
 }
 
@@ -196,9 +231,22 @@ function showFLPrecincts(feature, layer) {
 	layer.on({
 			click: addFLPrecinctsLayer
 	});
+	layer.on('mouseover', function(e) {
+		console.log(feature.properties);
+		var totalPopulation = parseInt(feature.properties.whitePop) + parseInt(feature.properties.blackPop) + parseInt(feature.properties.other_race);
+		var demographics = "Black: " + feature.properties.blackPop
+										 + "<br>Caucasian: " + feature.properties.whitePop
+										 + "<br>Other: " + feature.properties.other_race
+										 + "<br>Total Population: " + totalPopulation;
+
+		var popup = L.popup()
+   	.setLatLng(e.latlng) 
+   	.setContent(demographics)
+  	.openOn(map);
+	});
 }
 
-// Popup code
+// Popup code for precinct 
 function showMNPrecinctInfo(feature, layer) {
 	layer.on('mouseover', function(e) {
 		console.log(feature.properties);
@@ -207,7 +255,10 @@ function showMNPrecinctInfo(feature, layer) {
 										 + "<br>Caucasian: " + feature.properties.white_pop
 										 + "<br>Asian: " + feature.properties.asian_pop
 										 + "<br>Other: " + feature.properties.other_race_pop
-										 + "<br>Total Population: " + totalPopulation;
+										 + "<br>Total Population: " + totalPopulation
+										 + "<br>Republican Vote: " + feature.properties.republican_vote
+										 + "<br>Democratic Vote: " + feature.properties.democratic_vote
+										 + "<br>Other Vote: " + feature.properties.other_vote;
 
 		var popup = L.popup()
    	.setLatLng(e.latlng) 
@@ -224,7 +275,10 @@ function showMDPrecinctInfo(feature, layer) {
 										 + "<br>Caucasian: " + feature.properties.white_pop
 										 + "<br>Asian: " + feature.properties.asian_pop
 										 + "<br>Other: " + feature.properties.other_race_pop
-										 + "<br>Total Population: " + totalPopulation;
+										 + "<br>Total Population: " + totalPopulation
+										 + "<br>Republican Vote: " + feature.properties.republican_vote
+										 + "<br>Democratic Vote: " + feature.properties.democratic_vote
+										 + "<br>Other Vote: " + feature.properties.other_vote;
 
 		var popup = L.popup()
    	.setLatLng(e.latlng) 
@@ -241,7 +295,10 @@ function showFLPrecinctInfo(feature, layer) {
 										 + "<br>Caucasian: " + feature.properties.white_pop
 										 + "<br>Asian: " + feature.properties.asian_pop
 										 + "<br>Other: " + feature.properties.other_race_pop
-										 + "<br>Total Population: " + totalPopulation;
+										 + "<br>Total Population: " + totalPopulation
+										 + "<br>Republican Vote: " + feature.properties.republican_vote
+										 + "<br>Democratic Vote: " + feature.properties.democratic_vote
+										 + "<br>Other Vote: " + feature.properties.other_vote;
 
 		var popup = L.popup()
    	.setLatLng(e.latlng) 
@@ -315,7 +372,6 @@ $("#majorityMinorityMin").slider({});
 $("#convexHull").slider({});
 $("#majorityMinorityMax").slider({});
 $("#populationDeviation").slider({});
-$("#population").slider({});
 $("#polsbyPopper").slider({});
 $("#edgeCut").slider({});
 $("#efficencyGap").slider({});

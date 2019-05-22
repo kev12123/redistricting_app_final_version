@@ -170,8 +170,6 @@ $('#configSubmit').click(function(event) {
     var populationDeviation = $('#populationDeviation').val();
     var population = $('#population').val();
 
-    var fetchData = true;
-
     $('#loading').css('display','');
     $.ajax({
         type: 'POST',
@@ -374,8 +372,6 @@ function getAColor(prescicnt) {
     }
     return "#FFFFFF"
 }
-
-
 
 $('#majorityMinorityMin').change(function(event) {
     var value = $('#majorityMinorityMin').val();

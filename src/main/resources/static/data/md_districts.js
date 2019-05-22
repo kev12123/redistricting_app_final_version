@@ -9,6 +9,9 @@ var md_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "8",
+				"whitePop": "500193",
+				"blackPop": "103102",
+				"other_race": "65715",
 				"statename": "Maryland",
 				"member": {
 					"112": {
@@ -59,6 +62,9 @@ var md_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "4",
+				"whitePop": "224640",
+				"blackPop": "391377",
+				"other_race": "95300",
 				"statename": "Maryland",
 				"member": {
 					"112": {
@@ -114,6 +120,9 @@ var md_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "5",
+				"whitePop": "52830",
+				"blackPop": "953",
+				"other_race": "1296",
 				"statename": "Maryland",
 				"member": {
 					"112": {
@@ -164,6 +173,9 @@ var md_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "6",
+				"whitePop": "503747",
+				"blackPop": "98677",
+				"other_race": "49641",
 				"statename": "Maryland",
 				"member": {
 					"112": {
@@ -214,6 +226,9 @@ var md_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "7",
+				"whitePop": "258085",
+				"blackPop": "378297",
+				"other_race": "5412",
 				"statename": "Maryland",
 				"member": {
 					"112": {
@@ -264,6 +279,9 @@ var md_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "1",
+				"whitePop": "602374",
+				"blackPop": "88318",
+				"other_race": "8189",
 				"statename": "Maryland",
 				"member": {
 					"112": {
@@ -314,6 +332,9 @@ var md_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "2",
+				"whitePop": "401242",
+				"blackPop": "270602",
+				"other_race": "17052",
 				"statename": "Maryland",
 				"member": {
 					"112": {
@@ -364,6 +385,9 @@ var md_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "3",
+				"whitePop": "42330",
+				"blackPop": "957",
+				"other_race": "10296",
 				"statename": "Maryland",
 				"member": {
 					"112": {

@@ -9,6 +9,9 @@ var mn_districts_geojson = {
 			"properties": {
 				"startcong": "98",
 				"district": "6",
+				"whitePop": "641830",
+				"blackPop": "28557",
+				"other_race": "8296",
 				"statename": "Minnesota",
 				"member": {
 					"98": {
@@ -59,6 +62,9 @@ var mn_districts_geojson = {
 			"properties": {
 				"startcong": "98",
 				"district": "8",
+				"whitePop": "82830",
+				"blackPop": "1057",
+				"other_race": "9296",
 				"statename": "Minnesota",
 				"member": {
 					"98": {
@@ -109,6 +115,9 @@ var mn_districts_geojson = {
 			"properties": {
 				"startcong": "98",
 				"district": "1",
+				"whitePop": "607868",
+				"blackPop": "21519",
+				"other_race": "11196",
 				"statename": "Minnesota",
 				"member": {
 					"98": {
@@ -159,6 +168,9 @@ var mn_districts_geojson = {
 			"properties": {
 				"startcong": "98",
 				"district": "3",
+				"whitePop": "42830",
+				"blackPop": "957",
+				"other_race": "7296",
 				"statename": "Minnesota",
 				"member": {
 					"98": {
@@ -209,6 +221,9 @@ var mn_districts_geojson = {
 			"properties": {
 				"startcong": "98",
 				"district": "5",
+				"whitePop": "540032",
+				"blackPop": "45004",
+				"other_race": "10324",
 				"statename": "Minnesota",
 				"member": {
 					"98": {
@@ -259,6 +274,9 @@ var mn_districts_geojson = {
 			"properties": {
 				"startcong": "98",
 				"district": "4",
+				"whitePop": "504033",
+				"blackPop": "76030",
+				"other_race": "12657",
 				"statename": "Minnesota",
 				"member": {
 					"98": {
@@ -309,6 +327,9 @@ var mn_districts_geojson = {
 			"properties": {
 				"startcong": "98",
 				"district": "2",
+				"whitePop": "591484",
+				"blackPop": "35989",
+				"other_race": "17444",
 				"statename": "Minnesota",
 				"member": {
 					"98": {
@@ -359,6 +380,9 @@ var mn_districts_geojson = {
 			"properties": {
 				"startcong": "98",
 				"district": "7",
+				"whitePop": "602078",
+				"blackPop": "11556",
+				"other_race": "9522",
 				"statename": "Minnesota",
 				"member": {
 					"98": {

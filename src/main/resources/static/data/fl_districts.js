@@ -9,6 +9,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "1",
+				"whitePop": "588484",
+				"blackPop": "102046",
+				"other_race": "18410",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -59,6 +62,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "2",
+				"whitePop": "591584",
+				"blackPop": "99494",
+				"other_race": "10324",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -109,6 +115,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "3",
+				"whitePop": "558581",
+				"blackPop": "115769",
+				"other_race": "2375",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -159,6 +168,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "4",
+				"whitePop": "650103",
+				"blackPop": "75962",
+				"other_race": "12108",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -209,6 +221,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "5",
+				"whitePop": "324724",
+				"blackPop": "347173",
+				"other_race": "1908",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -259,6 +274,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "17",
+				"whitePop": "530000",
+				"blackPop": "50342",
+				"other_race": "10342",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -309,6 +327,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "18",
+				"whitePop": "234103",
+				"blackPop": "102323",
+				"other_race": "34384",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -359,6 +380,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "10",
+				"whitePop": "452012",
+				"blackPop": "75412",
+				"other_race": "24312",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -409,6 +433,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "11",
+				"whitePop": "674987",
+				"blackPop": "55718",
+				"other_race": "10507",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -459,6 +486,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "13",
+				"whitePop": "334803",
+				"blackPop": "28430",
+				"other_race": "11327",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -509,6 +539,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "14",
+				"whitePop": "340231",
+				"blackPop": "35024",
+				"other_race": "40324",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -559,6 +592,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "19",
+				"whitePop": "361123",
+				"blackPop": "28440",
+				"other_race": "9737",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -614,6 +650,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "21",
+				"whitePop": "597999",
+				"blackPop": "132577",
+				"other_race": "19009",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -664,6 +703,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "12",
+				"whitePop": "684803",
+				"blackPop": "38440",
+				"other_race": "10737",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -714,6 +756,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "6",
+				"whitePop": "632897",
+				"blackPop": "78757",
+				"other_race": "21496",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -764,6 +809,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "7",
+				"whitePop": "592201",
+				"blackPop": "80419",
+				"other_race": "38282",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -814,6 +862,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "8",
+				"whitePop": "630082",
+				"blackPop": "71454",
+				"other_race": "13430",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -864,6 +915,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "9",
+				"whitePop": "284104",
+				"blackPop": "18340",
+				"other_race": "10132",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -914,6 +968,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "15",
+				"whitePop": "321301",
+				"blackPop": "12341",
+				"other_race": "12231",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -964,6 +1021,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "16",
+				"whitePop": "685108",
+				"blackPop": "72444",
+				"other_race": "20570",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -1014,6 +1074,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "20",
+				"whitePop": "299551",
+				"blackPop": "417013",
+				"other_race": "19126",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -1064,6 +1127,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "22",
+				"whitePop": "579779",
+				"blackPop": "114346",
+				"other_race": "15519",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -1114,6 +1180,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "23",
+				"whitePop": "543715",
+				"blackPop": "117992",
+				"other_race": "26791",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -1164,6 +1233,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "24",
+				"whitePop": "336665",
+				"blackPop": "376775",
+				"other_race": "35088",
 				"statename": "Florida",
 				"member": {
 					"112": {
@@ -1214,6 +1286,9 @@ var fl_districts_geojson = {
 			"properties": {
 				"startcong": "108",
 				"district": "25",
+				"whitePop": "705942",
+				"blackPop": "35161",
+				"other_race": "16731",
 				"statename": "Florida",
 				"member": {
 					"112": {

@@ -52,9 +52,9 @@ input:focus {
 	margin: auto;
 }
 
-.loginvalid {
+/* .loginvalid {
 	display:none;
-}
+} */
 
 #logoutLabel {
 	display: none;
@@ -98,4 +98,3 @@ b {
 	color: red;
 	margin-top: 12px;
 }
-
