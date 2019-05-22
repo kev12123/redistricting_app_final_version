@@ -99,7 +99,9 @@ public class Precinct {
     }
 
     public void setParentCluster(Cluster parentCluster) {
+        Cluster oldParent = this.parentCluster;
         this.parentCluster = parentCluster;
+        System.out.printf("old Parent: %s :: new Parent: %s\n",(oldParent != null) ? oldParent.getPrimaryId() : "null",(this.parentCluster != null) ? this.parentCluster.getPrimaryId() : "null");
     }
 
     //Same as parentCluster used for legibility
