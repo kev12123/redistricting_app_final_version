@@ -245,7 +245,12 @@ public class AlgorithmController {
 			algorithm.run();
 
 			System.out.println("DONE");
-			System.out.println(algorithm.getNewState());
+			for(Cluster cluster : algorithm.getNewState().getClusters()){
+				System.out.println(cluster.getPrimaryId());
+				for(Precinct precinct : cluster.getPrecincts()){
+					System.out.printf("\tPrecinct: %s :: Parent District: %s\n",precinct.getPrecinctID(),precinct.getParentCluster().getPrimaryId());
+				}
+			}
 		}catch(Exception e){
 			System.out.println(e);
 		}

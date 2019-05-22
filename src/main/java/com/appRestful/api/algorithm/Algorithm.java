@@ -131,8 +131,8 @@ public class Algorithm {
         if (move.applyMove()){
             DataResponse dataResponse =  new DataResponse();
             List toSend = new ArrayList();
-            toSend.add(move.getPrecinct().getPrecinctID());
             toSend.add(move.getToDistrict().getPrimaryId());
+            toSend.add(move.getPrecinct().getPrecinctID());
             dataResponse.setDistrictData(toSend);
             dataResponse.setStage(Utility.phaseTwoResponse);
             RequestQueue.requestQueue.add(dataResponse);
