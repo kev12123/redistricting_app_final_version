@@ -334,14 +334,14 @@ public class AlgorithmController {
 	}
 
 
-//	public void generateRandomId(){
-//		byte[] array = new byte[7];
-//		new Random().nextBytes(array);
-//
-//		String generateRandomId = new String(array , Charset.forName("UTF-8"));
-//		System.out.println();
-//
-//	}
+	public void generateRandomId(){
+		byte[] array = new byte[7];
+		new Random().nextBytes(array);
+
+		String generateRandomId = new String(array , Charset.forName("UTF-8"));
+		System.out.println();
+
+	}
 	
 
 

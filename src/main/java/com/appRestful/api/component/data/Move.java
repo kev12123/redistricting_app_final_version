@@ -26,6 +26,18 @@ public class Move {
         this.objectiveFunction = objectiveFunction;
     }
 
+    public Precinct getPrecinct() {
+        return precinct;
+    }
+
+    public District getFromDistrict() {
+        return fromDistrict;
+    }
+
+    public District getToDistrict() {
+        return toDistrict;
+    }
+
 
     public void doMove(){
         fromDistrict.removePrecinct(precinct, algorithmRequestModel);

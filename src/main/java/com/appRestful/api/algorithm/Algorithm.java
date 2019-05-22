@@ -1,8 +1,5 @@
 package com.appRestful.api.algorithm;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.appRestful.api.component.Cluster;
@@ -40,7 +37,7 @@ public class Algorithm {
         objectiveFunction.setState(newState);
         status = AlgorithmStatus.INITIALIZED;
     }
-
+    HashMap<String, String>  districtMapper = new HashMap<>();
     public void run() {
         assertInitialization();
         status = AlgorithmStatus.RUNNING;
@@ -50,9 +47,11 @@ public class Algorithm {
             System.out.println("Precints being inserted" + cluster.getPrecincts().size());
             ArrayList<String> precintsData =  new ArrayList<>();
             precintsData.add(cluster.getPrimaryId());
+
             for(Precinct precinct : cluster.getPrecincts()){
                 System.out.println("\t" + "PRECINCT " + precinct.getPrecinctID());
                 precintsData.add(precinct.getPrecinctID());
+                districtMapper.put(precinct.getPrecinctID(), cluster.getPrimaryId());
             }
             DataResponse dataResponse =  new DataResponse();
             dataResponse.setDistrictData(precintsData);
@@ -66,27 +65,27 @@ public class Algorithm {
         }
         runPhaseTwo();
 
-        for(Cluster cluster : newState.getClusters()) {
-            System.out.println("CLUSTER " + cluster.getPrimaryId());
-            System.out.println("Precints being inserted" + cluster.getPrecincts().size());
-            ArrayList<String> precintsData =  new ArrayList<>();
-            precintsData.add(cluster.getPrimaryId());
-            for(Precinct precinct : cluster.getPrecincts()){
-                System.out.println("\t" + "PRECINCT " + precinct.getPrecinctID());
-                precintsData.add(precinct.getPrecinctID());
-            }
-            DataResponse dataResponse =  new DataResponse();
-            dataResponse.setDistrictData(precintsData);
-            dataResponse.setStage(Utility.phaseTwoResponse);
+//        for(Cluster cluster : newState.getClusters()) {
+//            System.out.println("CLUSTER " + cluster.getPrimaryId());
+//            System.out.println("Precints being inserted" + cluster.getPrecincts().size());
+//            ArrayList<String> precintsData =  new ArrayList<>();
+//            precintsData.add(cluster.getPrimaryId());
+//            for(Precinct precinct : cluster.getPrecincts()){
+//                System.out.println("\t" + "PRECINCT " + precinct.getPrecinctID());
+//                precintsData.add(precinct.getPrecinctID());
+//            }
+//            DataResponse dataResponse =  new DataResponse();
+//            dataResponse.setDistrictData(precintsData);
+//            dataResponse.setStage(Utility.phaseTwoResponse);
+//
+//            RequestQueue.requestQueue.add(dataResponse);
+//        }
 
-            RequestQueue.requestQueue.add(dataResponse);
-        }
 
 
-
-        DataResponse returnData = new DataResponse();
-        returnData.setStage("DONE");
-
+        DataResponse doneResponse = new DataResponse();
+        doneResponse.setStage("DONE");
+        RequestQueue.requestQueue.add(doneResponse);
 
         status = AlgorithmStatus.COMPLETED;
     }
@@ -129,7 +128,18 @@ public class Algorithm {
 
     private boolean runPhaseTwoStep() {
         Move move = getMove();
-        return move.applyMove();
+        if (move.applyMove()){
+            DataResponse dataResponse =  new DataResponse();
+            List toSend = new ArrayList();
+            toSend.add(move.getPrecinct().getPrecinctID());
+            toSend.add(move.getToDistrict().getPrimaryId());
+            dataResponse.setDistrictData(toSend);
+            dataResponse.setStage(Utility.phaseTwoResponse);
+            RequestQueue.requestQueue.add(dataResponse);
+            return true;
+        }else {
+            return false;
+        }
     }
 
     private Move getMove(){

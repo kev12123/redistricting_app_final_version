@@ -142,6 +142,20 @@ function colorStyle(features) {
 	};
 }
 
+
+function colorStyle1(features) {
+	return {
+		weight: 2,
+		opacity: 1,
+		color: 'white',
+		dashArray: '3',
+		fillOpacity: 0.7,
+		fillColor: "#FFFFFF"
+		// fillColor: getColor(features.properties.GEO_ID)
+	};
+}
+
+
 $('#configSubmit').click(function(event) {
     var goalDistricts = $('#numDistricts').val();
     var majorityMinorityMin = $('#majorityMinorityMin').val();
@@ -195,16 +209,19 @@ var prescicntSetCount = new Set();
 function phase1(data){
 
 }
-var timer = 1000;
+var timer = 500;
+var phase2Count = 0;
+
 function poll(){
 	setTimeout(function(){
 		  $.ajax({ url: "map/getData", success: function(data){
 		        //Update your dashboard gauge
-		    console.log("In GET request");
-            console.log("Recieved data: " + data.districtData);
+		  //  console.log("In GET request");
+
 
             if (data.stage == "DONE"){
                 console.log("In done");
+
                 timer = 100000000;
                 return;
             }
@@ -213,35 +230,72 @@ function poll(){
 
              // Update color table
              if (data.stage == "PHASE_ONE"){
+              //  console.log("Phase 1 started");
                 //phase1(data);
                 //for (var i = 0; i < data.districtData.length; i++){
+                var mn_precincts_layer_colored;
+                var md_precincts_layer_colored;
+                var fl_precincts_layer_colored;
                     updateColorTable(data.districtData);
                     switch (stateID){
                         case 27:
                             layerGroup.removeLayer(mn_precincts_layer);
-                             var mn_precincts_layer_colored = new L.GeoJSON(mn_precincts_geojson, {
+                             mn_precincts_layer_colored = new L.GeoJSON(mn_precincts_geojson, {
                                     style: colorStyle
                             });
                             layerGroup.addLayer(mn_precincts_layer_colored);
                             break;
                         case 24:
                             layerGroup.removeLayer(md_precincts_layer);
-                             var md_precincts_layer_colored = new L.GeoJSON(md_precincts_geojson, {
+                             md_precincts_layer_colored = new L.GeoJSON(md_precincts_geojson, {
                                     style: colorStyle
                             });
                             layerGroup.addLayer(md_precincts_layer_colored);
                             break;
                         case 12:
                             layerGroup.removeLayer(fl_precincts_layer);
-                             var fl_precincts_layer_colored = new L.GeoJSON(fl_precincts_geojson, {
+                             fl_precincts_layer_colored = new L.GeoJSON(fl_precincts_geojson, {
                                     style: colorStyle
                             });
                             layerGroup.addLayer(fl_precincts_layer_colored);
                             break;
                     }
              //   }
-             }else{
-                console.log("phase one complete");
+             }else if (data.stage == "PHASE_TWO"){
+                phase2Count++;
+                console.log("phase two");
+                //console.log("Recieved data: " + data.districtData);
+                updateColorTable(data.districtData);
+                if (phase2Count > 15){
+                    console.log("changing color");
+                    phase2Count = 0;
+                                 switch (stateID){
+                                                                     case 27:
+                                                                         layerGroup.removeLayer(mn_precincts_layer_colored);
+                                                                          var mn_precincts_layer_colored1 = new L.GeoJSON(mn_precincts_geojson, {
+                                                                                 style: colorStyle
+                                                                         });
+                                                                         layerGroup.addLayer(mn_precincts_layer_colored1);
+                                                                         break;
+                                                                     case 24:
+                                                                         layerGroup.removeLayer(md_precincts_layer_colored);
+                                                                          var md_precincts_layer_colored1 = new L.GeoJSON(md_precincts_geojson, {
+                                                                                 style: colorStyle
+                                                                         });
+                                                                         layerGroup.addLayer(md_precincts_layer_colored1);
+                                                                         break;
+                                                                     case 12:
+                                                                         layerGroup.removeLayer(fl_precincts_layer_colored1);
+                                                                          var fl_precincts_layer_colored1 = new L.GeoJSON(fl_precincts_geojson, {
+                                                                                 style: colorStyle
+                                                                         });
+                                                                         layerGroup.addLayer(fl_precincts_layer_colored1);
+                                                                         break;
+                                                                 }
+                }
+
+
+
              }
 
 
@@ -251,35 +305,35 @@ function poll(){
 //                 style: colorStyle
 //             });
 
-		     console.log("total count " + prescicntSetCount.size);
+		    // console.log("total count " + prescicntSetCount.size);
 		 }, dataType: "json" , complete: poll });
 
 	}, timer);
 
 	
 }
-
-var thePrecincts = ["270879401003", "270879401003", "270879401001"];
-$('#test').click(function(event) {
-
-    // console.log(getAColor("1500000US270879401003"));
-
-    layerGroup.removeLayer(mn_precincts_layer);
-    // Update color table
-    updateColorTable(thePrecincts);
-    var mn_precincts_layer_colored = new L.GeoJSON(mn_precincts_geojson, {
-        style: colorStyle
-    });
-    layerGroup.addLayer(mn_precincts_layer_colored);
-});
+//
+//var thePrecincts = ["270879401003", "270879401003", "270879401001"];
+//$('#test').click(function(event) {
+//
+//    // console.log(getAColor("1500000US270879401003"));
+//
+//    layerGroup.removeLayer(mn_precincts_layer);
+//    // Update color table
+//    updateColorTable(thePrecincts);
+//    var mn_precincts_layer_colored = new L.GeoJSON(mn_precincts_geojson, {
+//        style: colorStyle
+//    });
+//    layerGroup.addLayer(mn_precincts_layer_colored);
+//});
 
 
 function updateColorTable(prescinctsToColor) {
     // check if district geoID exists
-    console.log("Using chunk >" + prescinctsToColor[0]);
+    //console.log("Using chunk >" + prescinctsToColor[0]);
     if (!geoIDMap.has(prescinctsToColor[0])){
         // if not then create a set for  the prescicnts in that distrcits
-
+        //console.log("adding color to district" + )
         var d =  new Set();
         geoIDMap.set(prescinctsToColor[0], d);
         geoList.push(prescinctsToColor[0]);
@@ -290,7 +344,9 @@ function updateColorTable(prescinctsToColor) {
     }
 
     for (var i = 1; i < prescinctsToColor.length; i++){
-        //checkAndRemoveFromOtherDistrict(prescinctsToColor[i])
+        if (prescicntSetCount.has(prescinctsToColor[i])){
+             checkAndRemoveFromOtherDistrict(prescinctsToColor[i]);
+        }
         //add prescicnt to District
         geoIDMap.get(prescinctsToColor[0]).add(prescinctsToColor[i]);
         prescicntSetCount.add(prescinctsToColor[i]);
@@ -312,7 +368,7 @@ function getAColor(prescicnt) {
         var set = geoIDMap.get(geoList[i]);
         if (set.has(subStringID)) {
             var color = colorMap.get(geoList[i]);
-            console.log("adding color to district " + subStringID + " with color " + color);
+            //console.log("adding color to district " + subStringID + " with color " + color);
             return color;
         }
     }
