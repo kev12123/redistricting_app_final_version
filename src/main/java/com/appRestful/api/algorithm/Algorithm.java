@@ -85,11 +85,10 @@ public class Algorithm {
 //        }
 
 
-
+        sendFinalInformation();
         DataResponse doneResponse = new DataResponse();
         doneResponse.setStage("DONE");
         RequestQueue.requestQueue.add(doneResponse);
-        sendFinalInformation();
 
         status = AlgorithmStatus.COMPLETED;
     }
@@ -113,10 +112,8 @@ public class Algorithm {
     }
 
     private void sendFinalGerrymanderingData(){
-        List<String> finalGerrymanderingData = new ArrayList<>();
-        finalGerrymanderingData.add(objectiveFunction.getValue(Measure.EFFICENCY_GAP) + "");
         DataResponse dataResponse = new DataResponse();
-        dataResponse.setDistrictData(finalGerrymanderingData);
+        dataResponse.setFinalGerrymanderingValue(objectiveFunction.getValue(Measure.EFFICENCY_GAP));
         dataResponse.setStage(Utility.finalGerrymanderingResponse);
         RequestQueue.requestQueue.add(dataResponse);
     }
@@ -166,10 +163,8 @@ public class Algorithm {
     }
 
     private void sendInitialGerrymanderingValue(){
-        List<String> initialValue = new ArrayList<>();
-        initialValue.add(objectiveFunction.getValue(Measure.EFFICENCY_GAP) + "");
         DataResponse gerrymanderingDataResponse = new DataResponse();
-        gerrymanderingDataResponse.setDistrictData(initialValue);
+        gerrymanderingDataResponse.setInitialGerrymanderingValue(objectiveFunction.getValue(Measure.EFFICENCY_GAP));
         gerrymanderingDataResponse.setStage(Utility.initialGerrymanderingResponse);
         RequestQueue.requestQueue.add(gerrymanderingDataResponse);
     }
@@ -182,6 +177,7 @@ public class Algorithm {
             toSend.add(move.getToDistrict().getPrimaryId());
             toSend.add(move.getPrecinct().getPrecinctID());
             dataResponse.setDistrictData(toSend);
+            dataResponse.setObjectiveFunctionValue(objectiveFunction.getTotalValue());
             dataResponse.setStage(Utility.phaseTwoResponse);
             RequestQueue.requestQueue.add(dataResponse);
             System.out.printf("TO SEND TO QUEUE: Cluster ID: %s :: Precinct ID: %s\n",dataResponse.getDistrictData().get(0), dataResponse.getDistrictData().get(1));
