@@ -22,6 +22,8 @@ public class Demography {
         this.populationByParty = populationByParty;
         setMajorityMinorityStatus(algorithmRequestModel);
     }
+    
+    
 
     public Demography(Map<Demographic, Long> populationByRace, Map<PoliticalParty, Long> populationByParty, AlgorithmRequestModel algorithmRequestModel) {
         this.totalPopulation = 0;
