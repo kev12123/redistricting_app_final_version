@@ -238,22 +238,28 @@ function poll(){
                     switch (stateID){
                         case 27:
                             layerGroup.removeLayer(mn_precincts_layer);
+                            layerGroup.removeLayer(mn_districts_layer);
                              mn_precincts_layer_colored = new L.GeoJSON(mn_precincts_geojson, {
-                                    style: colorStyle
+                                    style: colorStyle,
+                                    onEachFeature: showMNPrecinctInfo
                             });
                             layerGroup.addLayer(mn_precincts_layer_colored);
                             break;
                         case 24:
                             layerGroup.removeLayer(md_precincts_layer);
+                            layerGroup.removeLayer(md_districts_layer);
                              md_precincts_layer_colored = new L.GeoJSON(md_precincts_geojson, {
-                                    style: colorStyle
+                                    style: colorStyle,
+                                    onEachFeature: showMDPrecinctInfo
                             });
                             layerGroup.addLayer(md_precincts_layer_colored);
                             break;
                         case 12:
                             layerGroup.removeLayer(fl_precincts_layer);
+                            layerGroup.removeLayer(fl_districts_layer);
                              fl_precincts_layer_colored = new L.GeoJSON(fl_precincts_geojson, {
-                                    style: colorStyle
+                                    style: colorStyle,
+                                    onEachFeature: showFlPrecinctInfo
                             });
                             layerGroup.addLayer(fl_precincts_layer_colored);
                             break;
