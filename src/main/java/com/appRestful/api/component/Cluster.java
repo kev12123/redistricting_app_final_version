@@ -236,7 +236,7 @@ public class Cluster extends SimpleGraph<Precinct,Edge> {
         Map<Precinct,Precinct> cloneMapping = new HashMap<>();
         for(Precinct precinct:getPrecincts()) {
             Precinct clonePrecinct = (Precinct) precinct.clone();
-            clonePrecinct.setParentCluster(this);
+            clonePrecinct.setParentCluster(cluster);
             cluster.addVertex(clonePrecinct);
             cloneMapping.put(precinct,clonePrecinct);
         }

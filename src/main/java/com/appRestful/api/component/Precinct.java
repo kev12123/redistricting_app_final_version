@@ -46,7 +46,7 @@ public class Precinct {
 
     //has imutable border once initialized.
     public void initilizeBorder(){
-        borderDegree = allNeighbors.size() - 1;
+        borderDegree = allNeighbors.size();
         isOnBorder = borderDegree > Utility.enclosed;
         isBorderInitialized = Utility.borderInitialized;
     }
@@ -79,7 +79,9 @@ public class Precinct {
     }
 
     public Object clone(){
-        return new Precinct(precinctID,(Data)data.clone(),allNeighbors,isOnBorder,borderDegree);
+        Precinct clonePrecinct = new Precinct(precinctID,(Data)data.clone(),allNeighbors,isOnBorder,borderDegree);
+        clonePrecinct.isBorderInitialized = this.isBorderInitialized;
+        return clonePrecinct;
     }
 
     public Cluster getParentCluster(){

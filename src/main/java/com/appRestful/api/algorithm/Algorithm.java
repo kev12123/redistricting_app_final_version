@@ -150,6 +150,8 @@ public class Algorithm {
         District fromDistrict = getRandomDistrict();
         Precinct precinct = getBorderPrecinct(fromDistrict);
         District toDistrict = getBorderingDistrict(precinct);
+        if(!newState.getClusters().contains(toDistrict) || !newState.getClusters().contains(fromDistrict))
+            System.out.println("-----------------------INLAID CLUSTER-----------------------------");
         return new Move(precinct,fromDistrict,toDistrict, algorithmRequestModel,objectiveFunction);
     }
 

@@ -269,9 +269,9 @@ public class State extends SimpleGraph<Cluster,Edge> {
             Cluster cloneCluster = (Cluster) cluster.clone();
             state.addVertex(cloneCluster);
             cloneMapping.put(cloneCluster,cloneCluster);
-            addPrecinctsToGlobalMapping(cluster,allPrecincts);
+            addPrecinctsToGlobalMapping(cloneCluster,allPrecincts);
         }
-        resetPrecinctNeighbors(allPrecincts);
+        state.resetPrecinctNeighbors(allPrecincts);
         return cloneMapping;
     }
 
