@@ -1,5 +1,11 @@
 $('#delete').css('display','none');
 
+
+var timer = 500;
+var phase2Count = 0;
+var md_precincts_layer_colored;
+var fl_precincts_layer_colored;
+
 $('#registerSubmit').click(function(event){
 	event.preventDefault();
 	var email = $('#emailRegister').val();
@@ -147,10 +153,10 @@ function colorStyle1(features) {
 	return {
 		weight: 2,
 		opacity: 1,
-		color: 'white',
+		color: 'black',
 		dashArray: '3',
-		fillOpacity: 0.7,
-		fillColor: "#FFFFFF"
+		fillOpacity: 1.0,
+		fillColor: getAColor(features.properties.GEO_ID)
 		// fillColor: getColor(features.properties.GEO_ID)
 	};
 }
@@ -207,8 +213,6 @@ var prescicntSetCount = new Set();
 function phase1(data){
 
 }
-var timer = 500;
-var phase2Count = 0;
 
 function poll(){
 	setTimeout(function(){
@@ -231,9 +235,7 @@ function poll(){
               //  console.log("Phase 1 started");
                 //phase1(data);
                 //for (var i = 0; i < data.districtData.length; i++){
-                var mn_precincts_layer_colored;
-                var md_precincts_layer_colored;
-                var fl_precincts_layer_colored;
+
                     updateColorTable(data.districtData);
                     switch (stateID){
                         case 27:
@@ -276,24 +278,24 @@ function poll(){
                                  switch (stateID){
                                                                      case 27:
                                                                          layerGroup.removeLayer(mn_precincts_layer_colored);
-                                                                          var mn_precincts_layer_colored1 = new L.GeoJSON(mn_precincts_geojson, {
-                                                                                 style: colorStyle
+                                                                          mn_precincts_layer_colored = new L.GeoJSON(mn_precincts_geojson, {
+                                                                                 style: colorStyle1
                                                                          });
                                                                          layerGroup.addLayer(mn_precincts_layer_colored1);
                                                                          break;
                                                                      case 24:
                                                                          layerGroup.removeLayer(md_precincts_layer_colored);
-                                                                          var md_precincts_layer_colored1 = new L.GeoJSON(md_precincts_geojson, {
-                                                                                 style: colorStyle
+                                                                          md_precincts_layer_colored = new L.GeoJSON(md_precincts_geojson, {
+                                                                                 style: colorStyle1
                                                                          });
-                                                                         layerGroup.addLayer(md_precincts_layer_colored1);
+                                                                         layerGroup.addLayer(md_precincts_layer_colored);
                                                                          break;
                                                                      case 12:
-                                                                         layerGroup.removeLayer(fl_precincts_layer_colored1);
-                                                                          var fl_precincts_layer_colored1 = new L.GeoJSON(fl_precincts_geojson, {
-                                                                                 style: colorStyle
+                                                                         layerGroup.removeLayer(fl_precincts_layer_colored);
+                                                                          fl_precincts_layer_colored = new L.GeoJSON(fl_precincts_geojson, {
+                                                                                 style: colorStyle1
                                                                          });
-                                                                         layerGroup.addLayer(fl_precincts_layer_colored1);
+                                                                         layerGroup.addLayer(fl_precincts_layer_colored);
                                                                          break;
                                                                  }
                 }

@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.appRestful.api.component.Cluster;
-import com.appRestful.api.component.Precinct;
 import com.appRestful.api.component.State;
 import com.appRestful.api.component.data.Data;
 import com.appRestful.api.component.data.Demography;
@@ -16,7 +15,6 @@ import com.appRestful.api.component.data.Geography;
 import com.appRestful.api.component.data.Result;
 import com.appRestful.api.enums.Measure;
 import com.appRestful.api.enums.PoliticalParty;
-import com.appRestful.api.enums.WeightCategory;
 import com.appRestful.api.model.request.AlgorithmRequestModel;
 import com.appRestful.api.utility.PoliticalVoteComparator;
 import com.appRestful.api.utility.Utility;
@@ -81,7 +79,7 @@ public class ObjectiveFunction {
                 calculateEdgeCutValue(data);
                 break;
             case MAJORITY_MINORITY:
-                calclateMajorityMinorityEqualityValue(data);
+                calculateMajorityMinorityEqualityValue(data);
                 break;
 
             default:
@@ -155,7 +153,7 @@ public class ObjectiveFunction {
         else values.put(Measure.POPULATION_EQUALITY, 0.25);
     }
 
-    private void calclateMajorityMinorityEqualityValue(Data data){
+    private void calculateMajorityMinorityEqualityValue(Data data){
         Demography demography = data.getDemographyData();
         if(demography.isMajorityMinority())
             weights.put(Measure.MAJORITY_MINORITY,Utility.fullWeight);
@@ -169,7 +167,7 @@ public class ObjectiveFunction {
 
     private void calculateLengthWidthRatioValue(Data data){
         double  lengthWidthRatio = data.getGeographicData().getLongestAxis() / data.getGeographicData().getMaxWidthPerpendicular();
-        values.put(Measure.LENGTH_WIDTH_RATIO, lengthWidthRatio);
+        values.put(Measure.LENGTH_WIDTH_RATIO, (lengthWidthRatio >= Utility.fullWeight) ? Utility.fullWeight : lengthWidthRatio);
     }
 
     public double getWeight(Measure measure) {

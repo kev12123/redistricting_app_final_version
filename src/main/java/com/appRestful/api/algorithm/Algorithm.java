@@ -8,6 +8,7 @@ import com.appRestful.api.component.Precinct;
 import com.appRestful.api.component.State;
 import com.appRestful.api.component.data.Move;
 import com.appRestful.api.enums.AlgorithmStatus;
+import com.appRestful.api.enums.Measure;
 import com.appRestful.api.model.request.AlgorithmRequestModel;
 import com.appRestful.api.model.request.RequestQueue;
 import com.appRestful.api.model.response.DataResponse;
@@ -47,16 +48,16 @@ public class Algorithm {
             for(Precinct precinct : cluster.getPrecincts()){
                 System.out.printf("\tprecinct ID: %s\n",precinct.getPrecinctID());
             }
-            ArrayList<String> precintsData =  new ArrayList<>();
-            precintsData.add(cluster.getPrimaryId());
+            ArrayList<String> precinctsData =  new ArrayList<>();
+            precinctsData.add(cluster.getPrimaryId());
 
             for(Precinct precinct : cluster.getPrecincts()){
                 System.out.println("\t" + "PRECINCT " + precinct.getPrecinctID());
-                precintsData.add(precinct.getPrecinctID());
+                precinctsData.add(precinct.getPrecinctID());
                 districtMapper.put(precinct.getPrecinctID(), cluster.getPrimaryId());
             }
             DataResponse dataResponse =  new DataResponse();
-            dataResponse.setDistrictData(precintsData);
+            dataResponse.setDistrictData(precinctsData);
             dataResponse.setStage(Utility.phaseOneResponse);
 //            String toSend = "";
 //            for (String s :dataResponse.getDistrictData()){
@@ -92,6 +93,32 @@ public class Algorithm {
         status = AlgorithmStatus.COMPLETED;
     }
 
+    private void sendFinalInformation(){
+        sendFinalMajorityMinorityData();
+    }
+
+    private void sendFinalMajorityMinorityData(){
+        List<String> majorityMinorityIDs = new ArrayList<>();
+        for(District district : newState.getDistricts()){
+            if(district.getDistrictData().getDemographyData().isMajorityMinority()){
+                majorityMinorityIDs.add(district.getPrimaryId());
+            }
+        }
+        DataResponse majorityMinorityResponse = new DataResponse();
+        majorityMinorityResponse.setDistrictData(majorityMinorityIDs);
+        majorityMinorityResponse.setStage(Utility.majorityMinorityResponse);
+        RequestQueue.requestQueue.add(majorityMinorityResponse);
+    }
+
+    private void sendFinalGerrymanderingData(){
+        List<String> finalGerrymanderingData = new ArrayList<>();
+        finalGerrymanderingData.add(objectiveFunction.getValue(Measure.EFFICENCY_GAP) + "");
+        DataResponse dataResponse = new DataResponse();
+        dataResponse.setDistrictData(finalGerrymanderingData);
+        dataResponse.setStage(Utility.finalGerrymanderingResponse);
+        RequestQueue.requestQueue.add(dataResponse);
+    }
+
     private DataResponse createDataResponse(Cluster cluster){
         DataResponse dataResponse = new DataResponse();
         List<String> ids = new ArrayList<>();
@@ -120,6 +147,7 @@ public class Algorithm {
     }
 
     public void runPhaseTwo() {
+        initializePhaseTwo();
         System.out.println("START PHASE TWO");
         int iteration = Utility.initialIteration;
         while (iteration < algorithmRequestModel.getIterationQuantity()){
@@ -127,6 +155,22 @@ public class Algorithm {
             System.out.println("ITERATION: " + iteration);
         }
      }
+
+    private void initializePhaseTwo(){
+        for(Cluster cluster:newState.getClusters()){
+            objectiveFunction.updateAllMeasures(cluster.getClusterData());
+        }
+        sendInitialGerrymanderingValue();
+    }
+
+    private void sendInitialGerrymanderingValue(){
+        List<String> initialValue = new ArrayList<>();
+        initialValue.add(objectiveFunction.getValue(Measure.EFFICENCY_GAP) + "");
+        DataResponse gerrymanderingDataResponse = new DataResponse();
+        gerrymanderingDataResponse.setDistrictData(initialValue);
+        gerrymanderingDataResponse.setStage(Utility.initialGerrymanderingResponse);
+        RequestQueue.requestQueue.add(gerrymanderingDataResponse);
+    }
 
     private boolean runPhaseTwoStep() {
         Move move = getMove();
