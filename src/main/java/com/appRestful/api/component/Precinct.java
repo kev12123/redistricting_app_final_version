@@ -133,7 +133,7 @@ public class Precinct {
     public Set<Precinct> getAllNeighborsInParentCluster(){
         Set<Precinct> neighborsInCluster = new HashSet<>();
         for(Precinct neighbor : this.getAllNeighbors()){
-            if( this != neighbor && this.parentCluster.getPrimaryId() == neighbor.getParentCluster().getPrimaryId()) {
+            if( this != neighbor && this.parentCluster.getPrimaryId().equals(neighbor.getParentCluster().getPrimaryId())) {
                 neighborsInCluster.add(neighbor);
             }
         }

@@ -44,7 +44,9 @@ public class Algorithm {
         runPhaseOne();
         for(Cluster cluster : newState.getClusters()) {
             System.out.println("CLUSTER " + cluster.getPrimaryId());
-            System.out.println("Precints being inserted" + cluster.getPrecincts().size());
+            for(Precinct precinct : cluster.getPrecincts()){
+                System.out.printf("\tprecinct ID: %s\n",precinct.getPrecinctID());
+            }
             ArrayList<String> precintsData =  new ArrayList<>();
             precintsData.add(cluster.getPrimaryId());
 
@@ -130,12 +132,14 @@ public class Algorithm {
         Move move = getMove();
         if (move.applyMove()){
             DataResponse dataResponse =  new DataResponse();
-            List toSend = new ArrayList();
+            List<String> toSend = new ArrayList<>();
             toSend.add(move.getToDistrict().getPrimaryId());
             toSend.add(move.getPrecinct().getPrecinctID());
             dataResponse.setDistrictData(toSend);
             dataResponse.setStage(Utility.phaseTwoResponse);
             RequestQueue.requestQueue.add(dataResponse);
+            System.out.printf("TO SEND TO QUEUE: Cluster ID: %s :: Precinct ID: %s\n",dataResponse.getDistrictData().get(0), dataResponse.getDistrictData().get(1));
+            System.out.printf("BACKEND DATA: Cluster ID: %s :: Precinct ID: %s\n", move.getToDistrict().getPrimaryId(), move.getPrecinct().getPrecinctID());
             return true;
         }else {
             return false;
