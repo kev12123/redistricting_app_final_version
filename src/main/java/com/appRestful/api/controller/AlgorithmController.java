@@ -38,6 +38,7 @@ import com.appRestful.api.enums.Demographic;
 import com.appRestful.api.enums.Measure;
 import com.appRestful.api.enums.PoliticalParty;
 import com.appRestful.api.model.request.AlgorithmRequestModel;
+import com.appRestful.api.model.request.BatchRequestModel;
 import com.appRestful.api.model.request.PopulationRequestModel;
 import com.appRestful.api.model.request.RequestQueue;
 import com.appRestful.api.model.response.DataResponse;
@@ -103,49 +104,8 @@ public class AlgorithmController {
 			System.out.println("The State ID: "+ stateId);
 			State state = new State(Edge.class);
 			List<CountyEntity> counties = countyRepo.findByCountyIdStateid(stateId);
-//		 List<PrecinctEntity> precincts = new ArrayList();
-//		 List<List<String>> data  = new ArrayList();
-//		 Set UniquePrecincts = new HashSet();
-//		 for(CountyEntity countyt : counties) {
-//				for(PrecinctEntity pEntity: precinctRepo.findByCountyidAndStateid(countyt.getCountyId().getId() , countyt.getCountyId().getStateid()))
-//				{
-//					precincts.add(pEntity);
-//
-//				}
-//
-//
-//		 }
-//
-//		 int numOfDistricts =4;
-//		 int precinctsInDistrict = (precincts.size() /4);
-//
-//		 System.out.println(precinctsInDistrict + "rr");
-//		 System.out.println(precincts.size() + "rr");
-//
-//		 int j = 0;
-//		 for(int i = 1 ; i <= 4 ; i++) {
-//			 int districtCount = 0;
-//			 ArrayList<String> precinctsToColor = new ArrayList<String>();
-//			 System.out.println(i);
-//			 for(  ; j < precincts.size() ; j++) {
-//				 if(districtCount == precinctsInDistrict)
-//					 break;
-//
-//				 precinctsToColor.add(Long.toString(precincts.get(j).getId()));
-//				 UniquePrecincts.add(precincts.get(j).getId());
-//
-//				 districtCount++;
-//
-//			 }
-//			 DataResponse resp = new DataResponse();
-//			 resp.setDistrictData(precinctsToColor);
-//			 resp.setStage("DUMMY PHASE");
-//			 RequestQueue.requestQueue.add(resp);
-//
-//		 }
-//
-//		 System.out.print(UniquePrecincts.size());
-//
+
+
 			Map<String,Precinct> precinctIds = new HashMap<>();
 //		 Set<Long> precincts = new HashSet();
 			for(CountyEntity countyt: counties) {
@@ -269,6 +229,157 @@ public class AlgorithmController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
+	@PostMapping("/runBatch")
+	public ResponseEntity runBatchAlgorithm(@RequestBody BatchRequestModel batchData) {
+		
+		AlgorithmRequestModel algorithmData = new AlgorithmRequestModel();
+		algorithmData.setEfficiencyGap(batchData.getBatchEfficiencyGap());
+		algorithmData.setMeanMedian(batchData.getBatchMeanMedian());
+		algorithmData.setPolsbyPopper(batchData.getBatchPolspyPopper());
+		algorithmData.setEdgeCut(batchData.getBatchEdgeCut());
+		algorithmData.setConvexHull(batchData.getBatchConvexHull());
+		algorithmData.setAllowedPopulationDeviation(batchData.getBatchPopulationDeviation());
+		algorithmData.setGoalDistricts(batchData.getBatchNumDistricts());
+		algorithmData.setGoalMajorityMinorityDistricts(0);
+		
+		for(int run = 0 ; run < batchData.getNumRuns() ; run++) {
+			System.out.println("STARTING "+  run+1 +" RUN");
+			long start = System.nanoTime();
+			long count = 0;
+          
+			try{
+
+				Map<String,Cluster> clusters = new HashMap();
+
+				//1.create objective function with user input in AlgorithmRequestModel
+
+				Map<Measure,Double>  weights = createWeights((algorithmData));
+
+				int stateId = batchData.getStateid();
+				System.out.println("The State ID: "+ stateId);
+				State state = new State(Edge.class);
+				List<CountyEntity> counties = countyRepo.findByCountyIdStateid(stateId);
+
+				Map<String,Precinct> precinctIds = new HashMap<>();
+
+				for(CountyEntity countyt: counties) {
+					for(PrecinctEntity pEntity: precinctRepo.findByCountyidAndStateid(countyt.getCountyId().getId() , countyt.getCountyId().getStateid())) {
+
+						//Allocate precinct population
+						Long totalPopulation = 0L;
+						Map<Demographic,Long> demographics = new HashMap();
+						PopulationEntity popul = populationRepo.findByPrecinctid(pEntity.getId());
+						demographics.put(Demographic.BLACK, popul.getBlackPopulation());
+						totalPopulation+=popul.getBlackPopulation();
+						demographics.put(Demographic.CAUCASIAN, popul.getWhitePopulation());
+						totalPopulation+=popul.getWhitePopulation();
+						demographics.put(Demographic.HISPANIC, popul.getOtherPopulation());
+						totalPopulation+=popul.getOtherPopulation();
+
+						//Allocate political party data
+						VotingEntity votes = votingRepo.findByPrecinctid(pEntity.getId());
+						Map<PoliticalParty,Long> parties = createElectionData(votes , pEntity.getId());
+
+						//Create demography object
+						Demography demography = new Demography(totalPopulation,demographics,parties,algorithmData);
+
+						//Create Result object
+						Result result = new Result(2006,(votes != null) ? votes.getDemocraticVote() : 0,(votes != null) ? votes.getRepublicanVote() : 0);
+
+						Collection<Result> results = new ArrayList<Result>();
+						results.add(result);
+
+						//create election results object
+						ElectionResults electionResults = new ElectionResults(results);
+
+						List<Coordinate> coordinatesData =  createPrecinctCoordinates(coordinateRepo ,pEntity.getId());
+
+
+						Geography geography = new Geography(countyt.getName() ,coordinatesData);
+
+						Data data = new Data(demography,electionResults,geography);
+
+						//create new precint
+						Precinct precinct = new Precinct(Long.toString(pEntity.getId()));
+						precinctIds.put(precinct.getPrecinctID(), precinct);
+
+						precinct.initializeData(data);
+
+						//Create cluster
+						Cluster cluster = new District(Edge.class,precinct);
+						state.addCluster(cluster);
+						clusters.put(cluster.getPrimaryId(), cluster);
+						System.out.println("finished cluster " + count++);
+
+						//iterate through precincts
+
+						//add neighbors list of neighbors
+
+
+					}
+				}
+
+
+				for(Precinct p : precinctIds.values()) {
+
+					List <NeighborEntity> neighbors = neighborRepo.findByNeighboridPrecinctid(Long.parseLong(p.getPrecinctID()));
+					for(NeighborEntity neighbor : neighbors) {
+
+						String neighborPrecinctId = neighbor.getNeighborPK().getNeighborprecinctid() + "";
+						Precinct pNeighbor = precinctIds.get(neighborPrecinctId);
+
+						p.addMutualNeighbor(pNeighbor);
+						Cluster cluster = p.getParentCluster();
+						Cluster neighborCluster = pNeighbor.getParentCluster();
+						if(!(state.containsEdge(cluster,neighborCluster) || cluster.equals(neighborCluster))) {
+
+							Edge edge = new Edge(cluster,neighborCluster,algorithmData);
+							state.addEdge(cluster, neighborCluster , edge);
+						}
+
+
+					}
+					count++;
+					System.out.println(count);
+
+				}
+
+
+				for(Precinct p : precinctIds.values())
+					p.initilizeBorder();
+
+
+				Long end = System.nanoTime();
+				System.out.println((end - start)/1000000000.);
+
+
+				algorithmData.setTargetPopulation(state.getTotalPopulation()/8);
+				algorithmData.setIterationQuantity(Utility.iterationQuantity);
+				System.out.println("Target population" + algorithmData.getTargetPopulation());
+
+
+				ObjectiveFunction objectiveFunction  = new ObjectiveFunction(weights,algorithmData,state);
+				Algorithm algorithm = new Algorithm(state);
+				algorithm.initializeAlgorithm(objectiveFunction, algorithmData);
+				algorithm.run();
+
+				System.out.println("DONE");
+				for(Cluster cluster : algorithm.getNewState().getClusters()){
+					System.out.println(cluster.getPrimaryId());
+					for(Precinct precinct : cluster.getPrecincts()){
+						System.out.printf("\tPrecinct: %s :: Parent District: %s\n",precinct.getPrecinctID(),precinct.getParentCluster().getPrimaryId());
+					}
+				}
+			}catch(Exception e){
+				System.out.println(e);
+			}
+			
+			System.out.println("END OF "+  run+1 +" RUN");
+			
+		}
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
 	@GetMapping("/getPopulation")
 	public ResponseEntity getPopulation(@RequestBody PopulationRequestModel req){
 		
@@ -316,6 +427,22 @@ public class AlgorithmController {
 		 weights.put(Measure.MAJORITY_MINORITY, (algorithmData.getMajorityMinorityWeight()));
 		 weights.put(Measure.MEAN_MEDIAN, algorithmData.getMeanMedian());
 		 weights.put(Measure.POPULATION_EQUALITY, algorithmData.getPopulationEquality());
+		 
+		 return weights;
+	}
+	
+	
+	public static Map<Measure,Double> createWeightsBatch(BatchRequestModel batchData) {
+		
+		 Map<Measure,Double>  weights = new HashMap();
+		 weights.put(Measure.EFFICENCY_GAP, batchData.getBatchEfficiencyGap());
+		 weights.put(Measure.POLSBY_POPPER, batchData.getBatchPolspyPopper());
+		 weights.put(Measure.EDGE_CUT, batchData.getBatchEdgeCut());
+		 weights.put(Measure.CONVEX_HULL, batchData.getBatchConvexHull());
+		 weights.put(Measure.LENGTH_WIDTH_RATIO, batchData.getBatchConvexHull());
+		 weights.put(Measure.MAJORITY_MINORITY, batchData.getBatchMajorityMinorityMax());
+		 weights.put(Measure.MEAN_MEDIAN, batchData.getBatchMeanMedian());
+		 weights.put(Measure.POPULATION_EQUALITY, batchData.getBatchPopulationDeviation());
 		 
 		 return weights;
 	}
