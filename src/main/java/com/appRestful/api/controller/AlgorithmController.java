@@ -59,6 +59,8 @@ import com.appRestful.api.utility.Utility;
 @RestController
 @RequestMapping("/map")
 public class AlgorithmController {
+
+	private int fileCount;
 	
 	@Autowired
 	StateService stateService;
@@ -87,7 +89,7 @@ public class AlgorithmController {
 	public ResponseEntity runAlgorithm(@RequestBody AlgorithmRequestModel algorithmData) throws Exception {
 		System.out.println("ALGORITHM HAS BEGUN");
 		PrintStream originalStream = System.out;
-		PrintStream newPrintStream = new PrintStream("Out.txt");
+		PrintStream newPrintStream = new PrintStream(Utility.outFilePath + fileCount++);
 		System.setOut(newPrintStream);
 		long start = System.nanoTime();
 		long count = 0;

@@ -59,5 +59,8 @@ public class Utility {
     public static String initialGerrymanderingResponse = "INITIAL_GERRYMANDERING_VALUE_RESPONSE";
     public static String finalGerrymanderingResponse = "FINAL_GERRYMANDERING_VALUE_RESPONSE";
     public static String majorityMinorityResponse = "MM";
+
+    //for IO
+    public static String outFilePath = "out.txt";
 }
 
