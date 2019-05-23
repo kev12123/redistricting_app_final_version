@@ -59,6 +59,7 @@ public class Algorithm {
             DataResponse dataResponse =  new DataResponse();
             dataResponse.setDistrictData(precinctsData);
             dataResponse.setStage(Utility.phaseOneResponse);
+            dataResponse.setPopulation(cluster.getClusterData().getDemographyData().getTotalPopulation());
 //            String toSend = "";
 //            for (String s :dataResponse.getDistrictData()){
 //                toSend += "#" + s;
