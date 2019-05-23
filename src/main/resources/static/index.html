@@ -37,13 +37,15 @@
           <div class="navbar-collapse collapse" id="collapsingNavbar">
               <ul class="navbar-nav ml-auto">
                   <li class="nav-item">
-                      <a id="userDisplay" class="nav-link" href="" data-target="#myModal" data-toggle="modal">Guest User</a>
+                      <img src="styles/loading.gif" id="loading" style="width:50px;height:60px;">
+                      <a class="btn btn-secondary" id="saveButton" href="#save" role="button" aria-expanded="false" style="display: inline">Save Run</a>
+                      <a id="userDisplay" class="nav-link" href="" data-target="#myModal" data-toggle="modal" style="display: inline">Guest User</a>
                   </li>
               </ul>
           </div>
       </nav>
     <div id="map"></div>
-    <div id="menu">
+    <div id="menu"> 
       <div id="registerLabel">
         <a class="btn btn-secondary" data-toggle="collapse" id="registerAnchor" href="#register" role="button" aria-expanded="false" aria-controls="collapseExample">Register</a>
       </div>
@@ -123,7 +125,6 @@
           </div>
           <div class="collapse" id="config">
               <div class="card card-body">
-                  
                       <div class="form-group">
                         <label for="compactness">Goal Districts</label>
                         <div>
@@ -186,6 +187,18 @@
                       </div> 
               </div>
           </div>
+
+          <div>
+            <a class="btn btn-secondary" id="runStatistics" data-toggle="collapse" href="#displayRunStatistics" role="button" aria-expanded="false" aria-controls="collapseExample">Run Statistics</a>
+          </div>
+          <div class="collapse" id="displayRunStatistics">
+              <div class="card card-body">
+                  <label for="compactness">Objective Function: <span id="objectiveFunctionTicks"> </span> </label>
+                  <label for="compactness">Gerrymandering Before: <span id="gerrymanderingBefore"> </span> </label>
+                  <label for="compactness">Gerrymandering After: <span id="gerrymanderingAfter"> </span> </label>
+                  <label for="compactness">Population: <span id="districtPopulation"> </span> </label>
+              </div>
+            </div>
 
           <div>
             <a class="btn btn-secondary" id="displayMajMin" data-toggle="collapse" href="#displayMajorityMinority" role="button" aria-expanded="false" aria-controls="collapseExample">Display Majority Minority</a>

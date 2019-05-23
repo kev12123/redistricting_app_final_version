@@ -1,5 +1,5 @@
 $('#delete').css('display','none');
-
+$('#loading').css('display','none');
 
 var timer = 500;
 var phase2Count = 0;
@@ -223,11 +223,23 @@ function poll(){
 
             if (data.stage == "DONE"){
                 console.log("In done");
-
+                $('#loading').css('display','none');
                 timer = 100000000;
                 return;
             }
-
+            console.log(data);
+            if (parseFloat(data.objectiveFunctionValue) !== 0) {
+                $('#objectiveFunctionTicks').text(data.objectiveFunctionValue + " ");
+            }
+            if (parseFloat(data.population) !== 0) {
+                $('#districtPopulation').append(data.population + " ");
+            }
+            if (data.stage === "INITIAL_GERRYMANDERING_VALUE_RESPONSE") {
+                $('#gerrymanderingBefore').append(data.initialGerrymanderingValue + " ");
+            }
+            if (data.stage === "FINAL_GERRYMANDERING_VALUE_RESPONSE") {
+                $('#gerrymanderingAfter').append(data.finalGerrymanderingValue + " ");
+            }
              // console.log(getAColor("1500000US270879401003"));
 
              // Update color table
@@ -279,29 +291,29 @@ function poll(){
                                                                      case 27:
                                                                          layerGroup.removeLayer(mn_precincts_layer_colored);
                                                                           mn_precincts_layer_colored = new L.GeoJSON(mn_precincts_geojson, {
-                                                                                 style: colorStyle1
+                                                                                 style: colorStyle1,
+                                                                                 onEachFeature: showMNPrecinctInfo
                                                                          });
                                                                          layerGroup.addLayer(mn_precincts_layer_colored1);
                                                                          break;
                                                                      case 24:
                                                                          layerGroup.removeLayer(md_precincts_layer_colored);
                                                                           md_precincts_layer_colored = new L.GeoJSON(md_precincts_geojson, {
-                                                                                 style: colorStyle1
+                                                                                 style: colorStyle1,
+                                                                                 onEachFeature: showMDPrecinctInfo
                                                                          });
                                                                          layerGroup.addLayer(md_precincts_layer_colored);
                                                                          break;
                                                                      case 12:
                                                                          layerGroup.removeLayer(fl_precincts_layer_colored);
                                                                           fl_precincts_layer_colored = new L.GeoJSON(fl_precincts_geojson, {
-                                                                                 style: colorStyle1
+                                                                                 style: colorStyle1,
+                                                                                 onEachFeature: showFLPrecinctInfo
                                                                          });
                                                                          layerGroup.addLayer(fl_precincts_layer_colored);
                                                                          break;
                                                                  }
                 }
-
-
-
              }
 
 
@@ -316,7 +328,7 @@ function poll(){
 
 	}, timer);
 
-	
+	// 
 }
 //
 //var thePrecincts = ["270879401003", "270879401003", "270879401001"];

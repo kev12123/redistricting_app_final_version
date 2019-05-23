@@ -89,7 +89,7 @@ $('#batchSubmit').click(function(event) {
     $('#batchResultsShow').css('display','');    
     $.ajax({
         type: 'POST',
-        url: '/batchRoute',
+        url: 'map//runBatch',
         data: JSON.stringify({
             stateid: stateID,
             batchFieldSelect: batchFieldSelect,
