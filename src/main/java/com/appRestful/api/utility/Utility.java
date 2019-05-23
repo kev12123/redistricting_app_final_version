@@ -56,5 +56,8 @@ public class Utility {
     //For phase response
     public static String phaseOneResponse = "PHASE_ONE";
     public static String phaseTwoResponse = "PHASE_TWO";
+    public static String initialGerrymanderingResponse = "INITIAL_GERRYMANDERING_VALUE_RESPONSE";
+    public static String finalGerrymanderingResponse = "FINAL_GERRYMANDERING_VALUE_RESPONSE";
+    public static String majorityMinorityResponse = "MM";
 }
 

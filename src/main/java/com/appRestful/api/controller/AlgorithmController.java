@@ -328,7 +328,7 @@ public class AlgorithmController {
 	public static List<Coordinate> createPrecinctCoordinates(CoordinatesRepository coordinateRepo , Long precinctId) {
 		
 		List<CoordinateEntity> coordinates = coordinateRepo.findByPrecinctid(precinctId);
-		List<Coordinate> coordinatesData = new ArrayList();
+		List<Coordinate> coordinatesData = new ArrayList<>();
 		
 		for(CoordinateEntity coordinate:coordinates) {
 			coordinatesData.add(new Coordinate(coordinate.getCoordinateX(),coordinate.getCoordinateY()));

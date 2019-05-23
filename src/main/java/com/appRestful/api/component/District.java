@@ -21,6 +21,9 @@ public class District extends Cluster {
         super(vertexSupplier, edgeSupplier, weighted);
     }
 
+    public Data getDistrictData(){
+        return this.getClusterData();
+    }
 
     public void addPrecinct(Precinct precinct, AlgorithmRequestModel algorithmRequestModel){
         super.addPrecinct(precinct, algorithmRequestModel);
