@@ -1,5 +1,6 @@
 package com.appRestful.api.controller;
 
+import java.io.PrintStream;
 import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -82,7 +83,11 @@ public class AlgorithmController {
   
 	
 	@PostMapping("/runAlgorithm")
-	public ResponseEntity runAlgorithm(@RequestBody AlgorithmRequestModel algorithmData) {
+	public ResponseEntity runAlgorithm(@RequestBody AlgorithmRequestModel algorithmData) throws Exception {
+		System.out.println("ALGORITHM HAS BEGUN");
+		PrintStream originalStream = System.out;
+		PrintStream newPrintStream = new PrintStream("Out.txt");
+		System.setOut(newPrintStream);
 		long start = System.nanoTime();
 		long count = 0;
 
@@ -258,7 +263,9 @@ public class AlgorithmController {
 
 		
 		
-		
+		System.out.flush();
+		System.setOut(originalStream);
+		System.out.println("ALGORITHM DONE");
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
@@ -347,11 +354,5 @@ public class AlgorithmController {
 		System.out.println();
 
 	}
-	
-
-
-
-	
-
 
 }

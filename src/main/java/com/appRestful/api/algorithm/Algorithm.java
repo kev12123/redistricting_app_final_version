@@ -89,12 +89,14 @@ public class Algorithm {
         DataResponse doneResponse = new DataResponse();
         doneResponse.setStage("DONE");
         RequestQueue.requestQueue.add(doneResponse);
+        sendFinalInformation();
 
         status = AlgorithmStatus.COMPLETED;
     }
 
     private void sendFinalInformation(){
         sendFinalMajorityMinorityData();
+        sendFinalGerrymanderingData();
     }
 
     private void sendFinalMajorityMinorityData(){
