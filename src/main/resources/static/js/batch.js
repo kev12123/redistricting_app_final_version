@@ -1,3 +1,4 @@
+$('#batchResultsShow').css('display','none');
 $("#batchFieldSelectValue").slider({});
 $("#batchMajorityMinorityMin").slider({});
 $("#batchMajorityMinorityMax").slider({});
@@ -58,6 +59,17 @@ $('#batchPopulationDeviation').change(function(event) {
     $('#batchPopDevTicks').text(": " + value + " %");
 });
 
+$('#selectBatch').change(function(event) {
+    var batch = $('#selectBatch').val();
+    if (parseInt(batch) === 1) {
+        $('#batchRun').text(1);
+    } else if (parseInt(batch) === 2) {
+        $('#batchRun').text(2);
+    } else if (parseInt(batch) === 3) {
+        $('#batchRun').text(3);
+    }
+});
+
 $('#batchSubmit').click(function(event) {
     var batchFieldSelect = $('#batchFieldSelect').val();
     var batchFieldSelectValue = $('#batchFieldSelectValue').val();
@@ -74,6 +86,7 @@ $('#batchSubmit').click(function(event) {
     var batchMeanMedian = $('#batchMeanMedian').val();
     var batchPopulationDeviation = $('#batchPopulationDeviation').val();
 
+    $('#batchResultsShow').css('display','');    
     $.ajax({
         type: 'POST',
         url: '/batchRoute',

@@ -25,6 +25,7 @@
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.1/bootstrap-slider.js"> </script>
+    <script src="js/leaflet.spin.min.js" charset="utf-8"></script>
   </head>
 
   <body>
@@ -126,7 +127,7 @@
                       <div class="form-group">
                         <label for="compactness">Goal Districts</label>
                         <div>
-                            <input class="form-control" type="number" id="numDistricts" name="districts" min="1" max="100">
+                            <input class="form-control" type="number" id="numDistricts" name="districts" min="1" max="100" value="1">
                         </div>
                         
                         <label for="compactness">Majority-Minority Min <span id="majMinTicks">: </span> </label>
@@ -139,7 +140,7 @@
                         </div>
                         <label for="convexHull">Convex Hull <span id="convexHullTicks">: </span> </label>
                         <div>
-                            <b>0</b> <input id="convexHull" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value="0"/> <b>1</b>
+                            <b>0</b> <input id="convexHull" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value=".5"/> <b>1</b>
                         </div>
                         
                         <label for="compactness">Target Demographic</label>
@@ -151,34 +152,34 @@
                         
                         <label for="compactness">Goal Majority-Minority Districts</label>
                         <div>
-                            <input class="form-control" type="number" id="numGoalDistricts" name="districts" min="1" max="100">
+                            <input class="form-control" type="number" id="numGoalDistricts" name="districts" min="1" max="100" value="1">
                         </div>
                         
                         <label for="compactness">Compactness Measure</label>
                         <br>
                         <label for="polsbyPopper">Polsby Popper <span id="polsbyPopperTicks">: </span> </label>
                         <div>
-                            <b>0</b> <input id="polsbyPopper" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value="0"/> <b>1</b>
+                            <b>0</b> <input id="polsbyPopper" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value=".5"/> <b>1</b>
                         </div>
                         <label for="compactness">Edge Cut <span id="edgeCutTicks">: </span> </label>
                         <div>
-                            <b>0</b> <input id="edgeCut" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value="0"/> <b>1</b>
+                            <b>0</b> <input id="edgeCut" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value=".5"/> <b>1</b>
                         </div>
 
                         <label for="politicalFairness">Political Fairness Measure</label>
                         <br>
                         <label for="efficencyGap">Efficency Gap <span id="effGapTicks">: </span> </label>
                         <div>
-                            <b>0</b> <input id="efficencyGap" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value="0"/> <b>1</b>
+                            <b>0</b> <input id="efficencyGap" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value=".5"/> <b>1</b>
                         </div>
                         <label for="compactness">Mean Median <span id="meanMedianTicks">: </span> </label>
                         <div>
-                            <b>0</b> <input id="meanMedian" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value="0"/> <b>1</b>
+                            <b>0</b> <input id="meanMedian" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step=".001" data-slider-value=".5"/> <b>1</b>
                         </div>
                         
                         <label for="racialCompactness">Population Deviation <span id="popDevTicks">: </span> </label>
                         <div>
-                            <b>0</b> <input id="populationDeviation" type="text" class="span2" value="" data-slider-min="0" data-slider-max=".05" data-slider-step=".001" data-slider-value="0"/> <b>5</b>
+                            <b>0</b> <input id="populationDeviation" type="text" class="span2" value="" data-slider-min="0" data-slider-max=".05" data-slider-step=".001" data-slider-value=".025"/> <b>5</b>
                         </div>
 
                         <button id="configSubmit" class="btn btn-secondary">Submit</button>
@@ -298,8 +299,33 @@
                         </div> 
               </div>
           </div>
-
         </div>
+
+        <div>
+          <a class="btn btn-secondary" data-toggle="collapse" id="batchResultsShow" href="#batchResults" role="button" aria-expanded="false" aria-controls="collapseExample">Batch Results </a>
+        </div>
+        <div class="collapse" id="batchResults">
+          <div class="card card-body">
+            <div class="form-group">
+              <label for="compactness">Select Batch</label>
+              <select class="form-control" id="selectBatch">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+              </select>
+
+              <label for="compactness">Number of Runs <span id="numBatchResults">: </span> </label>
+              <br>
+              <label for="compactness">Batch : <span id="batchRun"></span> </label>
+              <br>
+              <label for="compactness">Seats By Party <span id="seatsByParty">: </span> </label>
+              <br>
+              <label for="compactness">Objective Function <span id="objectiveFunction">: </span> </label>
+              <br>
+              <label for="compactness">Summary <span id="summary">: </span> </label>
+            </div>
+          </div>
+      </div>
         <div id="logoutLabel">
             <a class="btn btn-secondary" data-toggle="collapse" id="logout" role="button" aria-expanded="false" aria-controls="collapseExample">Logout</a>
         </div>
